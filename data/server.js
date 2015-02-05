@@ -23,7 +23,7 @@ server = http.createServer(function (req, res) {		//creates http server
 
 	    console.log(req.body);    		//will log the request object sent by githook
 
-	    git_clone("git@github.ncsu.edu:aisobran/Analysis.git", "/home/vagrant/data/repo");
+	    git_clone("git@github.com:Wildtrack/Analysis.git", "/home/vagrant/data/repo");
 
 	    //git_clone(req.body.commits.repository.ssh_url, "/home/vagrant/data/repo")
 	  		
