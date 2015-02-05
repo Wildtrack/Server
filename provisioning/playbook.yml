@@ -1,0 +1,18 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: install git
+      apt: name=git update_cache=yes
+    - name: install curl
+      apt: name=curl update_cache=yes
+    name: install docker
+      command: curl -sSL https://get.docker.com/ubuntu/ >> script.sh 
+      command: sh script.sh
+    - name: install nodejs
+      apt: name=nodejs update_cache=yes
+    #- name: docker pull command
+      #command: docker pull ubuntu
+    - name: Server Going Up
+      command: node server.js >> somelog.txt chdir=data/
+
