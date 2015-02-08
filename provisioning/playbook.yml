@@ -6,10 +6,14 @@
       apt: name=git update_cache=yes
     - name: run docker install script
       script: docker.sh
-    - name: run latest npm script
+    - name: run node install script
       script: npm.sh
-    - name: install npm
+    - name: install node
       apt: name=nodejs update_cache=yes 
+    #- name: pull meneal/buildbox
+      #command: docker pull meneal/buildbox
+      #register: cat
+    #- debug: var=cat.stdout_lines
     #- name: install software properties common
       #apt: name=software-properties-common update_cache=yes
     #- name: add ansible repo
