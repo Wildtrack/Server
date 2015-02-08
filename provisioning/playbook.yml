@@ -6,16 +6,16 @@
       apt: name=git update_cache=yes
     - name: run docker install script
       script: docker.sh
-    #- name: run latest npm script
-      #script: npm.sh
-    #- name: install npm
-      #apt: name=nodejs update_cache=yes 
-    - name: install software properties common
-      apt: name=software-properties-common update_cache=yes
-    - name: add ansible repo
-      apt_repository: repo='ppa:ansible/ansible' 
-    - name: install ansible
-      apt: name=ansible update_cache=yes
+    - name: run latest npm script
+      script: npm.sh
+    - name: install npm
+      apt: name=nodejs update_cache=yes 
+    #- name: install software properties common
+      #apt: name=software-properties-common update_cache=yes
+    #- name: add ansible repo
+      #apt_repository: repo='ppa:ansible/ansible' 
+    #- name: install ansible
+      #apt: name=ansible update_cache=yes
     #- name: Server Going Up
       #command: node server.js >> somelog.txt chdir=data/
 
