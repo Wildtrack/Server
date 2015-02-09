@@ -4,9 +4,10 @@ This build server was constructed from a main Vagrant box that runs an http serv
 
 Whenever there is a push the server builds the project in parallel Docker nodes.  The output of the build is displayed in the local server [URL](http://localhost:2234).  Every time the server runs the build it is on a fresh Docker buildbox, so there is no need for any clean functionality.  Whenver there ceases to be a need for the build server vagrant destroy removes everything.
 
-#Build
+##Prerequisites:  
+Requires Ansible and Vagrant.  Installation information is in the notes below.
 
-##Prerequisites:  Requires Ansible and Vagrant.  Installation information is in the notes below.
+#Build
 
 To build the project first clone the project and go to project directory and run:
 
