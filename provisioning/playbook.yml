@@ -10,16 +10,14 @@
       script: npm.sh
     - name: install node
       apt: name=nodejs update_cache=yes 
-    #- name: pull meneal/buildbox
-      #command: docker pull meneal/buildbox
-      #register: cat
-    #- debug: var=cat.stdout_lines
+    - name: pull meneal/buildbox
+      command: docker pull meneal/buildbox
     #- name: install software properties common
       #apt: name=software-properties-common update_cache=yes
     #- name: add ansible repo
       #apt_repository: repo='ppa:ansible/ansible' 
     #- name: install ansible
       #apt: name=ansible update_cache=yes
-    #- name: Server Going Up
-      #command: node server.js >> somelog.txt chdir=data/
+    - name: Server Going Up
+      command: node server.js >> somelog.txt chdir=data/
 
