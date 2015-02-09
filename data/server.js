@@ -26,9 +26,9 @@ server = http.createServer(function (req, res) {		//creates http server
 	    //git_clone("git@github.com:Wildtrack/MiniProject1.git", temp_directory); //clone project
 	     //cloning starts cascade of build activies
 
-      setTimeout(pull_docker(function(result){
+      pull_docker(function(result){
           res.end(result);
-      }), 10 * 30 * 1000);
+      });
 
 	    //res.end("OK");				//response to client (web page) is hello
 	}
