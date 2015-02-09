@@ -13,11 +13,17 @@ To build the project first clone the project and go to project directory and run
 
 	vagrant up
 
+Screenshot of response from command:
+![VagrantUp](https://github.com/Wildtrack/Server/blob/master/img/VagrantUp.png)
+
 Note that Vagrant up takes a LONG TIME.  Don't CRTL-C, the script is working even if it seems like it's not.  The script will download the needed vagrant box, install everything that it needs, and pull the image for the Docker buildbox, so especially if it's the first time you've run it, it takes awhile.
 
 Next run:
 
 	vagrant ssh
+
+Screenshot of response from command:
+![VagrantSSH](https://github.com/Wildtrack/Server/blob/master/img/VagrantSSH.png)
 
 In the vagrant box run:
 	
@@ -37,13 +43,21 @@ Log in the Vagrant Cloud/Atlas name and password.  Then run:
 	
 Add the url to a repo webhook [here](https://github.com/Wildtrack/MiniProject1/settings/hooks).  
 
+Screenshot of response from command:
+![Webhook](https://github.com/Wildtrack/Server/blob/master/img/Webhook.png)
+
 Push to the repo, or use the redeliver button to trigger a build.  The image below shows the redeliver button.
+
+![Redeliver](https://github.com/Wildtrack/Server/blob/master/img/Redeliver.png)
 
 In the host OS go to this [URL](http://localhost:2234) to see the output of the buildscript.
 
 Whenever you are done with the server run:
 
 	vagrant destroy
+
+Screenshot of response from command:
+![VagrantDestroy](https://github.com/Wildtrack/Server/blob/master/img/VagrantDestroy.png)
 
 ##Notes
 
