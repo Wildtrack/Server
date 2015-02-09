@@ -80,7 +80,7 @@ function pull_docker(callback){
         response = response.concat(stderr.trim());
       }
 
-      fs.writeFile('output.txt', response);
+      //fs.writeFile('output.txt', response);
       run_docker(response, callback)
 
       //callback(response);
