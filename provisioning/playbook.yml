@@ -18,6 +18,6 @@
       #apt_repository: repo='ppa:ansible/ansible' 
     #- name: install ansible
       #apt: name=ansible update_cache=yes
-    - name: Server Going Up
-      command: node server.js >> somelog.txt chdir=data/
+    #- name: Server Going Up
+      #command: node server.js >> somelog.txt chdir=data/
 
