@@ -1,5 +1,4 @@
-var http = require("http"),			//load http moduule
-    server;
+var http = require("http");		//load http moduule
 var exec = require('child_process').exec,
 	util = require('util'),
 	path = require('path'),
@@ -23,18 +22,15 @@ server = http.createServer(function (req, res) {		//creates http server
 
 	    console.log(req.headers);  //log headers of req object
 
-	    //git_clone("git@github.com:Wildtrack/MiniProject1.git", temp_directory); //clone project
-	     //cloning starts cascade of build activies
-
-      pull_docker(function(result){
+      if(!!req.headers['x-github-delivery']){
+          pull_docker(function(result){
           res.end(result);
-      });
-
-	    //res.end("OK");				//response to client (web page) is hello
+          });
+      }else{
+        res.end("Hello!  This is an automated build server.");
+      }
 	}
 });
-
-
 
 server.listen(3000);				//listens to this port on guest VM
 
@@ -60,7 +56,7 @@ function puts(error, stdout, stderr) {
   }
 }
 
-//Dockerbook---------------------------
+//DOcker build machine---------------------------
 function pull_docker(callback){
 
   console.log("Pulling docker");
@@ -309,45 +305,4 @@ function traverse(object, visitor)      //vistor pattern
     }
 }
 
-//Dockerode Code
-// function runExec(container) {
-//   options = {
-//     "AttachStdout": true,
-//     "AttachStderr": true,
-//     "Tty": false,
-//     Cmd: ["env"]
-//   };
-//   container.exec(options, function(err, exec) {
-//     if (err) return;
 
-//     exec.start(function(err, stream) {
-//       if (err) return;
-
-//       stream.setEncoding('utf8');
-//       stream.pipe(process.stdout);
-//     });
-//   });
-// }
-
-// function makeContainerNode(){
-
-//   console.log("makeContainerNode");
-
-//   docker.pull('meneal/buildbox', function (err, stream) {  
-//     if(err) {console.log(err); return;}
-//     else{
-//       console.log(stream);
-//       dockerRun();
-//     }
-//   });
-
-// }
-
-// function dockerRun(){
-
-//   console.log("Docker Run");
-
-//   docker.run('meneal/buildbox', '-v /home/vagrant/data:/vol meneal/buildbox sh -c /vol/dockerbook2.sh', process.stdout, function (err, data, container) {
-//     console.log(data.StatusCode);
-//   });
-// }
