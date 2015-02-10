@@ -22,12 +22,38 @@ server = http.createServer(function (req, res) {		//creates http server
 
 	    console.log(req.headers);  //log headers of req object
 
-      if(!!req.headers['x-github-delivery']){
-          pull_docker(function(result){
-          res.end(result);
+      if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
+          
+          var build_history = "Build Results, Most Recent First:\n\n";          //start creating build history
+          build_history = build_history.concat("Build On: ");
+          build_history = build_history.concat(d);
+          build_history = build_history.concat("---------------------------\n\nDocker Node---------------------- \n\n");
+
+          pull_docker(build_history);                             //pull docker and start build
+
+          var string = "Please visit http://".concat(req.headers.host);         //reply to github webhook with url to retreivable build status
+          string = string.concat(" to view your build status and result.");
+
+          res.end(string);                        //reponse 
+
+      }else{                                                //if it's not a github webhook output build history
+
+          
+          fs.exists('history.txt', function(exists) {
+
+              if(exists){
+                fs.readFile('history.txt', function read(err,data){
+                  if(err){
+                    console.log(err)
+                    res.end(err);
+                  }else{
+                    res.end(data);
+                  }
+                });
+              }else{
+                res.end("There have been no builds thus far.")
+              }
           });
-      }else{
-        res.end("Hello!  This is an automated build server.");
       }
 	}
 });
@@ -56,171 +82,69 @@ function puts(error, stdout, stderr) {
   }
 }
 
-//DOcker build machine---------------------------
-function pull_docker(callback){
+//Docker build machine---------------------------
+function pull_docker(build_history){                //pulls docker if its not present keeps track of build status 
 
   console.log("Pulling docker");
-
-  var response;
 
   exec(util.format("sudo docker pull meneal/buildbox"), function (error, stdout, stderr) {
     if (error) {
       emitter.emit('error', error);
-      response = error;
-      callback(response);
+      build_history = build_history.concat(error)
     } else {
       emitter.emit('info', stdout.trim());
-      response = stdout.trim();
+      build_history = build_history.concat(stdout.trim());
       if (stderr) {
         emitter.emit('error', stderr.trim());
-        response = response.concat(stderr.trim());
+        build_history = build_history.concat(stderr.trim());
       }
 
-      //fs.writeFile('output.txt', response);
-      run_docker(response, callback)
+      build_history = build_history.concat("\n\nDependency Install, Grunt Build and Test--------------------------\n\n")
 
-      //callback(response);
+      run_docker(build_history)
+     
     }    
   });
 }
 
-function run_docker(response,  callback){
+function run_docker(build_history){           //run docker with build script and test script run docker -> npm install -> bower install -> grunt build and test
 
   console.log("Running docker");
 
   exec(util.format("sudo docker run -v /home/vagrant/data:/vol meneal/buildbox sh -c /vol/dockerbook2.sh"), function (error, stdout, stderr) {
     if (error) {
       emitter.emit('error', error);
-      response = response.concat(error);
+      build_history = build_history.concat(error);
     } else {
       emitter.emit('info', stdout.trim());
-      response = response.concat(stdout.trim());
+      build_history = build_history.concat(stdout.trim());
       if (stderr) {
         emitter.emit('error', stderr.trim());
-        response = response.concat(stderr.trim());
+        build_history = build_history.concat(stderr.trim());
       }
 
-      callback(response);
+      fs.exists('history.txt', function(exists){              //writes to history file and history status is accessible through http
+        if(exists){
+          fs.readFile('history.txt', function read(err,data){         
+            if(err){
+              console.log(err)
+              res.end(err);
+            }else{
+              build_history = build_history.concat(data);
+
+              fs.writeFile('history.txt', build_history);          
+            }
+          });
+        }else{
+          fs.writeFile('history.txt', build_history);
+        }  
+      });
+
     }
   });
 }
 
 //------Local Build (currently not used)
-
-function docker_git_clone(){
-
-  exec(util.format("git clone https://github.com/Wildtrack/MiniProject1"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    docker_cd();
-  });  
-}
-
-function docker_cd(){
-
-  exec(util.format("cd MiniProject1"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    docker_install_grunt();
-  });  
-
-}
-
-function docker_install_grunt(){
-
-  exec(util.format("npm install -g grunt-cli "), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    docker_install_bower();
-  });  
-}
-
-function docker_install_bower(){
-
-  exec(util.format("npm install -g bower "), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    docker_npm_install();
-  });  
-}
-
-function docker_npm_install(){
-
-  exec(util.format("npm install"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    docker_bower();
-  });  
-}
-
-function docker_bower(){
-
-  exec(util.format("bower --allow-root install "), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    run_docker();
-  });  
-}
-
-function docker_grunt(){
-  exec(util.format("grunt"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-  });  
-}
-//---------------------
-
-
-
-
 
 function git_clone(url, dir) {      //clone to data/repo/
 
@@ -289,6 +213,7 @@ function run_grunt(){         //runs grunt "Done, without errors = success"
   exec(util.format('grunt'), puts);
 }
 
+//-----------------------
 
 function traverse(object, visitor)      //vistor pattern
 {
