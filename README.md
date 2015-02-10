@@ -51,11 +51,11 @@ Push to the repo, or use the redeliver button to trigger a build.  The image bel
 ![Redeliver](https://github.com/Wildtrack/Server/blob/master/img/Redeliver.png)
 
 Below a github webhook triggering on a push event:
-![GithubWebHook](https://github.com/Wildtrack/Server/blob/master/img/githook_request.png =500x)
+![GithubWebHook](https://github.com/Wildtrack/Server/blob/master/img/githook_request.png )
 
 In the host OS go to the vagrant url supplied in the body of the github webhook response or this [URL](http://localhost:2234) to see the output of the buildscript.
 
-![WebHookResponse](https://github.com/Wildtrack/Server/blob/master/img/githook_response.png =500x)
+![WebHookResponse](https://github.com/Wildtrack/Server/blob/master/img/githook_response.png)
 
 The build and testing results are saved so the whole history can be viewed (most recent first).  Below shows dependency install results using node package manager.
 
@@ -63,7 +63,7 @@ The build and testing results are saved so the whole history can be viewed (most
 
 Below shows the results of a grunt build and test using jshint.
 
-![GruntTest](https://github.com/Wildtrack/Server/blob/master/img/build_history_grunt.png =500x)
+![GruntTest](https://github.com/Wildtrack/Server/blob/master/img/build_history_grunt.png)
 
 Whenever you are done with the server run:
 
