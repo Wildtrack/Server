@@ -12,7 +12,8 @@ function main()
 
 	if( args.length == 0 )
 	{
-		args = ["subject.js"];
+		console.log("Usage: node main.js <filename>");
+		process.exit();
 	}
 	var filePath = args[0];
 
