@@ -1,0 +1,506 @@
+
+npm test;echo exit task 658b261b-7cf1-45bc-9d5a-76b7a9f5c0d8 $?
+]0;root@49af1a35f570: /mazeroot@49af1a35f570:/maze# [Knpm test;echo exit task 658b261b-7cf1-45bc-9d5a-76b7a9f 5c0d8 $?
+
+> test@0.0.0 test /maze
+> npm run mocha && npm run jshint-nocli
+
+
+> test@0.0.0 mocha /maze
+> istanbul cover ./node_modules/.bin/_mocha -- -u bdd -R tap
+
+1..90
+ok 1 BACKTRACK TESTS Backtrack model constructor Check that on construction the tree is null
+ok 2 BACKTRACK TESTS backtrack.setRoot() Set root to first position Check that on setting x to 1 it is 1
+ok 3 BACKTRACK TESTS backtrack.setRoot() Set root to first position Check that on setting y to 2 it is 2
+ok 4 BACKTRACK TESTS backtrack.setRoot() Set root again, should not be possible Check that on setting x to 3 it is 1
+ok 5 BACKTRACK TESTS backtrack.setRoot() Set root again, should not be possible Check that on setting y to 3 it is 2
+ok 6 BACKTRACK TESTS backtrack.onTrack() Move cursor to position 5,5 Check that no new node added.
+ok 7 BACKTRACK TESTS backtrack.onTrack() Move cursor to position 5,5 Check that current direction is no value(-1)
+ok 8 BACKTRACK TESTS backtrack.onTrack() Move cursor to position 1,2 Check that no new node added.
+ok 9 BACKTRACK TESTS backtrack.onTrack() Move cursor to position 1,2 Check that current direction is no value(-1)
+ok 10 BACKTRACK TESTS backtrack.onTrack() Move cursor to 3,2 Check that no new node added.
+ok 11 BACKTRACK TESTS backtrack.onTrack() Move cursor to 3,2 Check that lastX has changed
+ok 12 BACKTRACK TESTS backtrack.onTrack() Move cursor to 3,2 Check that lastY has changed
+ok 13 BACKTRACK TESTS backtrack.onTrack() Move cursor to 3,2 Check that current direction is correct
+ok 14 BACKTRACK TESTS backtrack.onTrack() Move cursor to 5,2  Check whether this is a new trail, false is new trail
+ok 15 BACKTRACK TESTS backtrack.onTrack() Move cursor to 5,2  Check that no new node added.
+ok 16 BACKTRACK TESTS backtrack.onTrack() Move cursor to 5,2  Check that lastX has changed
+ok 17 BACKTRACK TESTS backtrack.onTrack() Move cursor to 5,2  Check that lastY is the same
+ok 18 BACKTRACK TESTS backtrack.onTrack() Move cursor to 5,2  Check that current direction is correct
+ok 19 BACKTRACK TESTS backtrack.onTrack() Move cursor y++  Check that new node added at 5,2.
+ok 20 BACKTRACK TESTS backtrack.onTrack() Move cursor y++  Check that lastX is the same
+ok 21 BACKTRACK TESTS backtrack.onTrack() Move cursor y++  Check that lastY has changed
+ok 22 BACKTRACK TESTS backtrack.onTrack() Move cursor y++  Check that current direction is correct
+ok 23 BACKTRACK TESTS backtrack.onTrack() Move cursor y++  Check that pointer direction is correct
+ok 24 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that new node added at 5,3.
+ok 25 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that lastX has changed
+ok 26 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that lastY is the same
+ok 27 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that current direction is correct
+ok 28 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that backtrack direction is correct
+ok 29 BACKTRACK TESTS backtrack.onTrack() Move cursor x--  Check that pointer direction is correct
+ok 30 BACKTRACK TESTS backtrack.onTrack() Move cursor x-- again  Check that last node added at 5,3.
+ok 31 BACKTRACK TESTS backtrack.onTrack() Move cursor x-- again  Check that lastX has changed
+ok 32 BACKTRACK TESTS backtrack.onTrack() Move cursor x-- again  Check that lastY is the same
+ok 33 BACKTRACK TESTS backtrack.onTrack() Move cursor x-- again  Check that current direction is correct
+ok 34 BACKTRACK TESTS backtrack.onTrack() Move cursor x-- again  Check that backtrack direction is correct
+ok 35 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check whether this is a new trail, false is new trail
+ok 36 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check that last node added at 5,3.
+ok 37 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check that lastX has changed
+ok 38 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check that lastY is the same
+ok 39 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check that current direction is correct
+ok 40 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check that backtrack direction is correct
+ok 41 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ Check node revisited
+ok 42 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check whether this is a new trail, false is new trail
+ok 43 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check that last node added at 5,3.
+ok 44 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check that lastX has changed
+ok 45 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check that lastY is the same
+ok 46 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check that current direction is correct
+ok 47 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check that backtrack direction is correct
+ok 48 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move x++ again Check node revisited
+ok 49 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check whether this is a new trail, false is new trail
+ok 50 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check that last node added at 5,3.
+ok 51 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check that lastX has changed
+ok 52 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check that lastY is the same
+ok 53 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check that current direction is correct
+ok 54 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check that backtrack direction is correct
+ok 55 BACKTRACK TESTS backtrack.onTrack() Backtrack on x and move y-- Check node revisited
+ok 56 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check whether this is a new trail, false is new trail
+ok 57 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check that last node added at 5,3.
+ok 58 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check that lastX has changed
+ok 59 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check that lastY is the same
+ok 60 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check that current direction is correct
+ok 61 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check that backtrack direction is correct
+ok 62 BACKTRACK TESTS backtrack.onTrack() Move to 3,2 Check node revisited
+ok 63 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check whether this is a new trail, false is new trail
+ok 64 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check that last node added at 5,3.
+ok 65 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check that lastX has changed
+ok 66 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check that lastY is the same
+ok 67 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check that current direction is correct
+ok 68 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check that backtrack direction is correct
+ok 69 BACKTRACK TESTS backtrack.onTrack() Move to 3,3 Check node revisited
+ok 70 MAZEMODEL TESTS Maze constructor tests Maze(null) Check the constructed maze length is correct
+ok 71 MAZEMODEL TESTS Maze constructor tests Maze(null) Check that constructed maze width is correct
+ok 72 MAZEMODEL TESTS Maze constructor tests Maze(parameters) Check board width is what was constructed
+ok 73 MAZEMODEL TESTS Maze constructor tests Maze(parameters) Check board height is what was constructed
+ok 74 MAZEMODEL TESTS Maze constructor tests Maze(parameters) Check that maze width is what was constructed
+ok 75 MAZEMODEL TESTS Maze constructor tests Maze(parameters) Check that maze height is what was constructed
+ok 76 MAZEMODEL TESTS Maze.makeAccessible() Check if exits are made accessible they are accessible
+ok 77 MAZEMODEL TESTS Maze.makeAccessible() Check north accessibility
+ok 78 MAZEMODEL TESTS Maze.makeAccessible() Check west accessibility
+ok 79 MAZEMODEL TESTS Maze.makeAccessible() After making another location accessible is it?
+ok 80 MAZEMODEL TESTS Maze.accessibleExits() Accessible exits should report correct exits
+ok 81 MAZEMODEL TESTS Maze.onlyOneDir() Tests only one dir with one direction.
+ok 82 MAZEMODEL TESTS Maze.onlyOneDir() Tests only one dir with two directions.
+ok 83 MAZEMODEL TESTS Maze.movePlayer() Try to move the player south.
+ok 84 MAZEMODEL TESTS Maze.movePlayer() Check that movement has occurred.
+ok 85 MAZEMODEL TESTS Maze.movePlayer() Try to move player south when the south is blocked
+ok 86 MAZEMODEL TESTS Maze.movePlayer() Check that not movement has occurred
+ok 87 MAZEMODEL TESTS Maze.hasPlayerWon() Player has not won yet Do we start the game having won?
+ok 88 MAZEMODEL TESTS Maze.hasPlayerWon() Player has not won yet Is our position what we expect?
+ok 89 MAZEMODEL TESTS Maze.hasPlayerWon() Player has won After moving south have we won?
+ok 90 MAZEMODEL TESTS Maze.hasPlayerWon() Player has won Are we where we expect to be after moving south?
+# tests 90
+# pass 90
+# fail 0
+=============================================================================
+Writing coverage object [/maze/coverage/coverage.json]
+Writing coverage reports at [/maze/coverage]
+=============================================================================
+
+=============================== Coverage summary ===============================
+[91mStatements   : 30.34% ( 196/646 )[0m
+[91mBranches     : 32.43% ( 108/333 )[0m
+[91mFunctions    : 23.94% ( 17/71 )[0m
+[91mLines        : 31.29% ( 194/620 )[0m
+================================================================================
+
+> test@0.0.0 jshint-nocli /maze
+> jshint . ;true
+
+backtrack.js: line 7, col 2, Missing semicolon.
+backtrack.js: line 39, col 49, A constructor name should start with an uppercase letter.
+backtrack.js: line 41, col 10, Missing semicolon.
+backtrack.js: line 49, col 31, Expected '{' and instead saw 'console'.
+backtrack.js: line 54, col 49, A constructor name should start with an uppercase letter.
+backtrack.js: line 62, col 30, Expected '!==' and instead saw '!='.
+backtrack.js: line 62, col 49, Expected '!==' and instead saw '!='.
+backtrack.js: line 64, col 35, Expected '{' and instead saw 'console'.
+backtrack.js: line 68, col 35, Expected '===' and instead saw '=='.
+backtrack.js: line 68, col 54, Expected '===' and instead saw '=='.
+backtrack.js: line 69, col 35, Expected '{' and instead saw 'console'.
+backtrack.js: line 75, col 35, Expected '===' and instead saw '=='.
+backtrack.js: line 82, col 52, Expected '===' and instead saw '=='.
+backtrack.js: line 85, col 48, Expected '{' and instead saw 'return'.
+backtrack.js: line 91, col 29, Expected '===' and instead saw '=='.
+backtrack.js: line 91, col 57, Expected '===' and instead saw '=='.
+backtrack.js: line 93, col 52, Expected '{' and instead saw 'return'.
+backtrack.js: line 97, col 26, Expected '{' and instead saw 'this'.
+backtrack.js: line 105, col 57, Expected '===' and instead saw '=='.
+backtrack.js: line 119, col 35, Expected '===' and instead saw '=='.
+backtrack.js: line 122, col 29, Expected '===' and instead saw '=='.
+backtrack.js: line 122, col 57, Expected '===' and instead saw '=='.
+backtrack.js: line 124, col 52, Expected '{' and instead saw 'return'.
+backtrack.js: line 134, col 35, Expected '===' and instead saw '=='.
+backtrack.js: line 138, col 39, Expected '{' and instead saw 'console'.
+backtrack.js: line 139, col 79, A constructor name should start with an uppercase letter.
+backtrack.js: line 147, col 10, Missing semicolon.
+backtrack.js: line 152, col 37, Expected '===' and instead saw '=='.
+backtrack.js: line 161, col 18, Expected '{' and instead saw 'return'.
+backtrack.js: line 162, col 10, Missing semicolon.
+backtrack.js: line 169, col 27, Expected '!==' and instead saw '!='.
+backtrack.js: line 181, col 32, Expected '!==' and instead saw '!='.
+backtrack.js: line 193, col 10, Missing semicolon.
+backtrack.js: line 197, col 31, Expected '===' and instead saw '=='.
+backtrack.js: line 197, col 51, Expected '===' and instead saw '=='.
+backtrack.js: line 197, col 55, Expected '{' and instead saw 'return'.
+backtrack.js: line 198, col 53, Expected '{' and instead saw 'return'.
+backtrack.js: line 199, col 18, Expected '{' and instead saw 'return'.
+backtrack.js: line 200, col 10, Missing semicolon.
+backtrack.js: line 206, col 25, Expected '===' and instead saw '=='.
+backtrack.js: line 206, col 29, Expected '{' and instead saw 'return'.
+backtrack.js: line 209, col 32, Expected '!==' and instead saw '!='.
+backtrack.js: line 211, col 43, Expected '===' and instead saw '=='.
+backtrack.js: line 211, col 72, Expected '===' and instead saw '=='.
+backtrack.js: line 211, col 81, Expected '{' and instead saw 'return'.
+backtrack.js: line 212, col 58, Expected '{' and instead saw 'return'.
+backtrack.js: line 216, col 10, Missing semicolon.
+backtrack.js: line 220, col 29, Expected '!==' and instead saw '!='.
+backtrack.js: line 221, col 58, Expected '{' and instead saw 'return'.
+backtrack.js: line 222, col 22, Expected '{' and instead saw 'return'.
+backtrack.js: line 222, col 22, Too many errors. (84% scanned).
+
+designer/designer.js: line 37, col 21, Expected '!==' and instead saw '!='.
+designer/designer.js: line 50, col 17, Expected '!==' and instead saw '!='.
+designer/designer.js: line 64, col 25, Expected '!==' and instead saw '!='.
+designer/designer.js: line 85, col 34, Unexpected use of '^='.
+designer/designer.js: line 86, col 36, Unexpected use of '^='.
+designer/designer.js: line 87, col 58, Unexpected use of '&'.
+designer/designer.js: line 92, col 34, Unexpected use of '^='.
+designer/designer.js: line 93, col 36, Unexpected use of '^='.
+designer/designer.js: line 94, col 58, Unexpected use of '&'.
+designer/designer.js: line 106, col 30, Expected '!==' and instead saw '!='.
+designer/designer.js: line 107, col 17, Expected '{' and instead saw 'start_cell'.
+designer/designer.js: line 108, col 30, Expected '!==' and instead saw '!='.
+designer/designer.js: line 116, col 31, Expected '!==' and instead saw '!='.
+designer/designer.js: line 117, col 17, Expected '{' and instead saw 'finish_cell'.
+designer/designer.js: line 118, col 31, Expected '!==' and instead saw '!='.
+designer/designer.js: line 131, col 28, Expected '===' and instead saw '=='.
+designer/designer.js: line 132, col 28, Expected '===' and instead saw '=='.
+designer/designer.js: line 133, col 30, Expected '===' and instead saw '=='.
+designer/designer.js: line 134, col 30, Expected '===' and instead saw '=='.
+designer/designer.js: line 144, col 21, Expected '!==' and instead saw '!='.
+designer/designer.js: line 145, col 17, Expected '{' and instead saw 'code'.
+designer/designer.js: line 147, col 17, Expected '{' and instead saw 'code'.
+designer/designer.js: line 151, col 17, Expected '!==' and instead saw '!='.
+designer/designer.js: line 152, col 13, Expected '{' and instead saw 'code'.
+designer/designer.js: line 3, col 5, 'document' is not defined.
+designer/designer.js: line 14, col 9, 'document' is not defined.
+designer/designer.js: line 15, col 9, 'document' is not defined.
+designer/designer.js: line 16, col 5, 'mtbl' is not defined.
+designer/designer.js: line 16, col 12, 'document' is not defined.
+designer/designer.js: line 19, col 5, 'mtbl' is not defined.
+designer/designer.js: line 20, col 10, 'y' is not defined.
+designer/designer.js: line 20, col 17, 'y' is not defined.
+designer/designer.js: line 20, col 24, 'y' is not defined.
+designer/designer.js: line 21, col 14, 'y' is not defined.
+designer/designer.js: line 22, col 9, 'table_row' is not defined.
+designer/designer.js: line 22, col 21, 'document' is not defined.
+designer/designer.js: line 23, col 14, 'x' is not defined.
+designer/designer.js: line 23, col 21, 'x' is not defined.
+designer/designer.js: line 23, col 28, 'x' is not defined.
+designer/designer.js: line 25, col 18, 'y' is not defined.
+designer/designer.js: line 25, col 21, 'x' is not defined.
+designer/designer.js: line 26, col 13, 'table_cell' is not defined.
+designer/designer.js: line 26, col 26, 'document' is not defined.
+designer/designer.js: line 27, col 13, 'table_cell' is not defined.
+designer/designer.js: line 28, col 13, 'table_cell' is not defined.
+designer/designer.js: line 29, col 13, 'table_cell' is not defined.
+designer/designer.js: line 29, col 32, 'x' is not defined.
+designer/designer.js: line 30, col 13, 'table_cell' is not defined.
+designer/designer.js: line 30, col 32, 'y' is not defined.
+designer/designer.js: line 31, col 13, 'table_cell' is not defined.
+designer/designer.js: line 31, col 13, Too many errors. (16% scanned).
+
+main.js: line 13, col 23, Expected '===' and instead saw '=='.
+main.js: line 42, col 64, Expected '!==' and instead saw '!='.
+main.js: line 43, col 35, Expected '!==' and instead saw '!='.
+main.js: line 43, col 62, Expected '!==' and instead saw '!='.
+main.js: line 44, col 38, Expected '!==' and instead saw '!='.
+main.js: line 71, col 62, Expected '!==' and instead saw '!='.
+main.js: line 99, col 2, Missing semicolon.
+main.js: line 147, col 78, Missing semicolon.
+main.js: line 161, col 77, Don't make functions within a loop.
+main.js: line 197, col 27, 'attrname' is already defined.
+main.js: line 201, col 27, 'attrname' is already defined.
+main.js: line 207, col 9, Bad line breaking before '+'.
+main.js: line 229, col 36, Expected '!==' and instead saw '!='.
+main.js: line 229, col 69, Expected '!==' and instead saw '!='.
+main.js: line 231, col 48, Expected '!==' and instead saw '!='.
+main.js: line 232, col 54, Expected '===' and instead saw '=='.
+main.js: line 234, col 54, Expected '!==' and instead saw '!='.
+main.js: line 249, col 93, Missing semicolon.
+main.js: line 256, col 83, Expected '===' and instead saw '=='.
+main.js: line 258, col 51, Expected '===' and instead saw '=='.
+main.js: line 262, col 106, Missing semicolon.
+main.js: line 271, col 83, Expected '===' and instead saw '=='.
+main.js: line 273, col 51, Expected '===' and instead saw '=='.
+main.js: line 277, col 47, 'rightHand' is already defined.
+main.js: line 277, col 106, Missing semicolon.
+main.js: line 286, col 42, Expected '===' and instead saw '=='.
+main.js: line 288, col 59, Expected '===' and instead saw '=='.
+main.js: line 292, col 63, Expected '===' and instead saw '=='.
+main.js: line 305, col 42, Expected '===' and instead saw '=='.
+main.js: line 307, col 59, Expected '===' and instead saw '=='.
+main.js: line 309, col 40, 'p' is already defined.
+main.js: line 311, col 63, Expected '===' and instead saw '=='.
+main.js: line 379, col 36, Expected '!==' and instead saw '!='.
+main.js: line 380, col 9, Bad line breaking before '?'.
+main.js: line 92, col 18, 'faker' is not defined.
+main.js: line 93, col 18, 'faker' is not defined.
+main.js: line 94, col 18, 'faker' is not defined.
+main.js: line 56, col 10, 'genManipObjects' is defined but never used.
+main.js: line 90, col 10, 'fakeDemo' is defined but never used.
+main.js: line 348, col 10, 'traverseWithCancel' is defined but never used.
+main.js: line 365, col 10, 'functionName' is defined but never used.
+main.js: line 38, col 9, 'params' is defined but never used.
+main.js: line 68, col 9, 'instantiateName' is defined but never used.
+
+maze.js: line 2, col 5, Expected '{' and instead saw 'var'.
+maze.js: line 5, col 21, 'Input' is not defined.
+maze.js: line 22, col 9, 'thisThing' is not defined.
+maze.js: line 27, col 9, '_canvas' is not defined.
+maze.js: line 32, col 28, 'trailModel' is not defined.
+maze.js: line 33, col 13, 'trail' is not defined.
+maze.js: line 33, col 21, 'thisThing' is not defined.
+maze.js: line 34, col 13, 'trail' is not defined.
+maze.js: line 35, col 13, 'trail' is not defined.
+maze.js: line 36, col 13, 'trail' is not defined.
+maze.js: line 37, col 20, 'trail' is not defined.
+maze.js: line 41, col 35, 'thisThing' is not defined.
+maze.js: line 44, col 28, 'Input' is not defined.
+maze.js: line 45, col 16, 'thisThing' is not defined.
+maze.js: line 47, col 17, 'thisThing' is not defined.
+maze.js: line 47, col 45, 'thisThing' is not defined.
+maze.js: line 48, col 43, 'thisThing' is not defined.
+maze.js: line 52, col 28, 'Input' is not defined.
+maze.js: line 53, col 16, 'thisThing' is not defined.
+maze.js: line 53, col 33, '_canvas' is not defined.
+maze.js: line 55, col 17, 'thisThing' is not defined.
+maze.js: line 55, col 43, '_canvas' is not defined.
+maze.js: line 55, col 61, 'thisThing' is not defined.
+maze.js: line 56, col 43, 'thisThing' is not defined.
+maze.js: line 60, col 28, 'Input' is not defined.
+maze.js: line 61, col 16, 'thisThing' is not defined.
+maze.js: line 63, col 17, 'thisThing' is not defined.
+maze.js: line 63, col 45, 'thisThing' is not defined.
+maze.js: line 64, col 43, 'thisThing' is not defined.
+maze.js: line 68, col 28, 'Input' is not defined.
+maze.js: line 69, col 16, 'thisThing' is not defined.
+maze.js: line 69, col 33, '_canvas' is not defined.
+maze.js: line 71, col 17, 'thisThing' is not defined.
+maze.js: line 71, col 43, '_canvas' is not defined.
+maze.js: line 71, col 60, 'thisThing' is not defined.
+maze.js: line 72, col 43, 'thisThing' is not defined.
+maze.js: line 44, col 47, 'e' is defined but never used.
+maze.js: line 52, col 51, 'e' is defined but never used.
+maze.js: line 60, col 49, 'e' is defined but never used.
+maze.js: line 68, col 50, 'e' is defined but never used.
+
+mazeMenu.js: line 10, col 5, Expected '{' and instead saw 'var'.
+mazeMenu.js: line 27, col 2, Missing semicolon.
+mazeMenu.js: line 50, col 21, Missing semicolon.
+mazeMenu.js: line 104, col 37, Expected '{' and instead saw 's'.
+mazeMenu.js: line 106, col 10, Missing semicolon.
+mazeMenu.js: line 110, col 10, Missing semicolon.
+mazeMenu.js: line 117, col 10, Missing semicolon.
+mazeMenu.js: line 121, col 10, Missing semicolon.
+mazeMenu.js: line 125, col 10, Missing semicolon.
+mazeMenu.js: line 129, col 34, Expected '{' and instead saw 'this'.
+mazeMenu.js: line 130, col 10, Missing semicolon.
+mazeMenu.js: line 133, col 27, Expected '===' and instead saw '=='.
+mazeMenu.js: line 141, col 30, Expected '!==' and instead saw '!='.
+mazeMenu.js: line 141, col 60, Expected '{' and instead saw '$'.
+mazeMenu.js: line 144, col 18, Expected '{' and instead saw '++'.
+mazeMenu.js: line 145, col 10, Missing semicolon.
+mazeMenu.js: line 332, col 68, Expected '{' and instead saw 'updateStatus'.
+mazeMenu.js: line 336, col 68, Expected '{' and instead saw 'updateStatus'.
+mazeMenu.js: line 340, col 68, Expected '{' and instead saw 'updateStatus'.
+mazeMenu.js: line 344, col 68, Expected '{' and instead saw 'updateStatus'.
+mazeMenu.js: line 356, col 2, Unnecessary semicolon.
+mazeMenu.js: line 373, col 70, Expected '{' and instead saw 'AMaze'.
+mazeMenu.js: line 13, col 1, 'currentMazeFile' is not defined.
+mazeMenu.js: line 14, col 1, 'currentLevel' is not defined.
+mazeMenu.js: line 15, col 1, 'currentMaze' is not defined.
+mazeMenu.js: line 21, col 1, 'mazeDirectory' is not defined.
+mazeMenu.js: line 33, col 36, 'mazeDirectory' is not defined.
+mazeMenu.js: line 36, col 12, 'currentLevel' is not defined.
+mazeMenu.js: line 38, col 21, 'mazeDirectory' is not defined.
+mazeMenu.js: line 38, col 48, 'currentLevel' is not defined.
+mazeMenu.js: line 40, col 13, 'currentMaze' is not defined.
+mazeMenu.js: line 42, col 15, 'currentMaze' is not defined.
+mazeMenu.js: line 43, col 45, 'currentLevel' is not defined.
+mazeMenu.js: line 43, col 73, 'currentMaze' is not defined.
+mazeMenu.js: line 46, col 11, 'currentLevel' is not defined.
+mazeMenu.js: line 47, col 9, 'currentMaze' is not defined.
+mazeMenu.js: line 50, col 5, 'currentLevel' is not defined.
+mazeMenu.js: line 70, col 13, 'confirm' is not defined.
+mazeMenu.js: line 72, col 13, 'AMaze' is not defined.
+mazeMenu.js: line 72, col 30, 'currentMazeFile' is not defined.
+mazeMenu.js: line 108, col 9, 'getTime' is not defined.
+mazeMenu.js: line 113, col 43, 'getTime' is not defined.
+mazeMenu.js: line 151, col 22, 'CE' is not defined.
+mazeMenu.js: line 152, col 21, 'Input' is not defined.
+mazeMenu.js: line 171, col 34, 'document' is not defined.
+mazeMenu.js: line 171, col 70, 'window' is not defined.
+mazeMenu.js: line 171, col 104, 'window' is not defined.
+mazeMenu.js: line 313, col 41, 'AMaze' is not defined.
+mazeMenu.js: line 331, col 36, 'Input' is not defined.
+mazeMenu.js: line 332, col 46, 'AMaze' is not defined.
+mazeMenu.js: line 332, col 46, Too many errors. (84% scanned).
+
+mazeModel.js: line 3, col 5, Expected '{' and instead saw 'var'.
+mazeModel.js: line 51, col 27, Unexpected use of '&'.
+mazeModel.js: line 53, col 25, Expected '===' and instead saw '=='.
+mazeModel.js: line 76, col 38, Unexpected use of '&'.
+mazeModel.js: line 76, col 84, Unexpected use of '&'.
+mazeModel.js: line 78, col 12, Unexpected use of '|='.
+mazeModel.js: line 80, col 47, Unexpected use of '&'.
+mazeModel.js: line 80, col 93, Unexpected use of '&'.
+mazeModel.js: line 82, col 12, Unexpected use of '|='.
+mazeModel.js: line 84, col 38, Unexpected use of '&'.
+mazeModel.js: line 84, col 84, Unexpected use of '&'.
+mazeModel.js: line 86, col 12, Unexpected use of '|='.
+mazeModel.js: line 88, col 46, Unexpected use of '&'.
+mazeModel.js: line 88, col 92, Unexpected use of '&'.
+mazeModel.js: line 90, col 12, Unexpected use of '|='.
+mazeModel.js: line 100, col 13, Unexpected use of '&'.
+mazeModel.js: line 102, col 26, Unexpected use of '|='.
+mazeModel.js: line 103, col 28, Unexpected use of '|='.
+mazeModel.js: line 105, col 13, Unexpected use of '&'.
+mazeModel.js: line 107, col 26, Unexpected use of '|='.
+mazeModel.js: line 108, col 28, Unexpected use of '|='.
+mazeModel.js: line 110, col 13, Unexpected use of '&'.
+mazeModel.js: line 112, col 26, Unexpected use of '|='.
+mazeModel.js: line 113, col 28, Unexpected use of '|='.
+mazeModel.js: line 115, col 13, Unexpected use of '&'.
+mazeModel.js: line 117, col 26, Unexpected use of '|='.
+mazeModel.js: line 118, col 28, Unexpected use of '|='.
+mazeModel.js: line 125, col 38, Unexpected use of '&'.
+mazeModel.js: line 153, col 31, Expected '===' and instead saw '=='.
+mazeModel.js: line 153, col 67, Expected '===' and instead saw '=='.
+mazeModel.js: line 157, col 66, Missing semicolon.
+mazeModel.js: line 50, col 120, 'arr' is defined but never used.
+mazeModel.js: line 50, col 115, 'idx' is defined but never used.
+
+mazeRender.js: line 30, col 27, Expected '!==' and instead saw '!='.
+mazeRender.js: line 80, col 25, Expected '!==' and instead saw '!='.
+mazeRender.js: line 80, col 46, Expected '!==' and instead saw '!='.
+mazeRender.js: line 102, col 25, Expected '!==' and instead saw '!='.
+mazeRender.js: line 102, col 47, Expected '!==' and instead saw '!='.
+mazeRender.js: line 110, col 28, Unexpected use of '<<'.
+mazeRender.js: line 116, col 20, Expected '!==' and instead saw '!='.
+mazeRender.js: line 119, col 35, Expected '!==' and instead saw '!='.
+mazeRender.js: line 131, col 85, Expected '!==' and instead saw '!='.
+mazeRender.js: line 145, col 18, 'x' used out of scope.
+mazeRender.js: line 145, col 25, 'x' used out of scope.
+mazeRender.js: line 145, col 46, 'x' used out of scope.
+mazeRender.js: line 149, col 36, 'x' used out of scope.
+mazeRender.js: line 150, col 74, 'x' used out of scope.
+mazeRender.js: line 158, col 24, 'x' used out of scope.
+mazeRender.js: line 158, col 28, Expected '===' and instead saw '=='.
+mazeRender.js: line 158, col 55, Expected '===' and instead saw '=='.
+mazeRender.js: line 167, col 24, 'x' used out of scope.
+mazeRender.js: line 167, col 28, Expected '===' and instead saw '=='.
+mazeRender.js: line 167, col 53, Expected '===' and instead saw '=='.
+mazeRender.js: line 203, col 18, 'x' used out of scope.
+mazeRender.js: line 203, col 25, 'x' used out of scope.
+mazeRender.js: line 203, col 46, 'x' used out of scope.
+mazeRender.js: line 205, col 22, 'y' used out of scope.
+mazeRender.js: line 205, col 29, 'y' used out of scope.
+mazeRender.js: line 205, col 51, 'y' used out of scope.
+mazeRender.js: line 207, col 39, 'x' used out of scope.
+mazeRender.js: line 207, col 64, 'y' used out of scope.
+mazeRender.js: line 208, col 28, 'x' used out of scope.
+mazeRender.js: line 208, col 32, Expected '===' and instead saw '=='.
+mazeRender.js: line 208, col 55, 'y' used out of scope.
+mazeRender.js: line 208, col 59, Expected '===' and instead saw '=='.
+mazeRender.js: line 208, col 85, 'x' used out of scope.
+mazeRender.js: line 208, col 89, Expected '===' and instead saw '=='.
+mazeRender.js: line 208, col 110, 'y' used out of scope.
+mazeRender.js: line 208, col 114, Expected '===' and instead saw '=='.
+mazeRender.js: line 209, col 25, Expected '{' and instead saw 'ctx'.
+mazeRender.js: line 212, col 41, 'x' used out of scope.
+mazeRender.js: line 212, col 44, 'y' used out of scope.
+mazeRender.js: line 212, col 47, Unexpected use of '&'.
+mazeRender.js: line 212, col 72, Expected '!==' and instead saw '!='.
+mazeRender.js: line 216, col 41, 'x' used out of scope.
+mazeRender.js: line 216, col 44, 'y' used out of scope.
+mazeRender.js: line 216, col 47, Unexpected use of '&'.
+mazeRender.js: line 216, col 72, Expected '!==' and instead saw '!='.
+mazeRender.js: line 220, col 41, 'x' used out of scope.
+mazeRender.js: line 220, col 44, 'y' used out of scope.
+mazeRender.js: line 220, col 47, Unexpected use of '&'.
+mazeRender.js: line 220, col 72, Expected '!==' and instead saw '!='.
+mazeRender.js: line 224, col 41, 'x' used out of scope.
+mazeRender.js: line 224, col 41, Too many errors. (75% scanned).
+
+test/req.js: line 1, col 49, Missing semicolon.
+
+test/test-backtrack.js: line 4, col 1, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 5, col 1, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 6, col 1, 'TEST_X2' is not defined.
+test/test-backtrack.js: line 7, col 1, 'TEST_Y2' is not defined.
+test/test-backtrack.js: line 26, col 31, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 26, col 40, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 29, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 32, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 37, col 31, 'TEST_X2' is not defined.
+test/test-backtrack.js: line 37, col 40, 'TEST_Y2' is not defined.
+test/test-backtrack.js: line 40, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 43, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 53, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 54, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 65, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 66, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 77, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 78, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 95, col 52, 'TEST_X1' is not defined.
+test/test-backtrack.js: line 96, col 52, 'TEST_Y1' is not defined.
+test/test-backtrack.js: line 9, col 5, 'x' is defined but never used.
+test/test-backtrack.js: line 10, col 5, 'y' is defined but never used.
+
+test/test-mazeModel.js: line 15, col 32, Unexpected use of '|'.
+test/test-mazeModel.js: line 16, col 32, Unexpected use of '|'.
+test/test-mazeModel.js: line 16, col 42, Unexpected use of '|'.
+test/test-mazeModel.js: line 16, col 52, Unexpected use of '|'.
+test/test-mazeModel.js: line 58, col 47, Unexpected use of '|'.
+test/test-mazeModel.js: line 58, col 57, Unexpected use of '|'.
+test/test-mazeModel.js: line 58, col 67, Unexpected use of '|'.
+test/test-mazeModel.js: line 92, col 71, Unexpected use of '|'.
+test/test-mazeModel.js: line 118, col 57, Unexpected use of '|'.
+
+trailModel.js: line 33, col 18, Missing semicolon.
+trailModel.js: line 38, col 18, Missing semicolon.
+trailModel.js: line 51, col 27, Expected '{' and instead saw 'console'.
+trailModel.js: line 51, col 85, Expected '!==' and instead saw '!='.
+trailModel.js: line 87, col 36, Expected '!==' and instead saw '!='.
+trailModel.js: line 106, col 27, Expected '{' and instead saw 'console'.
+trailModel.js: line 106, col 85, Expected '!==' and instead saw '!='.
+trailModel.js: line 117, col 36, Expected '{' and instead saw 'ctx'.
+trailModel.js: line 121, col 22, Expected '{' and instead saw 'return'.
+trailModel.js: line 144, col 36, Expected '!==' and instead saw '!='.
+trailModel.js: line 148, col 37, Expected '===' and instead saw '=='.
+trailModel.js: line 160, col 2, Missing semicolon.
+trailModel.js: line 171, col 10, Missing semicolon.
+trailModel.js: line 175, col 10, Missing semicolon.
+trailModel.js: line 179, col 10, Missing semicolon.
+trailModel.js: line 183, col 10, Missing semicolon.
+trailModel.js: line 184, col 2, Missing semicolon.
+trailModel.js: line 32, col 54, 'boolean' is not defined.
+trailModel.js: line 37, col 50, 'boolean' is not defined.
+trailModel.js: line 40, col 34, 'backtrack' is not defined.
+trailModel.js: line 138, col 13, 'debugOn' is defined but never used.
+
+373 errors
+exit task 658b261b-7cf1-45bc-9d5a-76b7a9f5c0d8 0

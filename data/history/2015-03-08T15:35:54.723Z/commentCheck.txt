@@ -1,0 +1,54 @@
+
+node commentCheck.js backtrack.js main.js maze.js mazeMenu.js mazeModel.js mazeRender.js trailModel.js;echo exit task 6c168e2f-7b45-4687-918a-c87b7d167c5f $?
+]0;root@dbbe2d1e3644: /mazeroot@dbbe2d1e3644:/maze# [Knode commentCheck.js backtrack.js main.js maze.js mazeM enu.js mazeModel.js mazeRender.js trailModel.js;echo exit task 6c168e2f-7b45-468 7-918a-c87b7d167c5f $?
+===================
+backtrack.js
+===================
+Number of line comments per total number of lines of code 0.23106060606060605
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 6.777777777777778
+Number of block comments per function 0
+===================
+main.js
+===================
+Number of line comments per total number of lines of code 0.06718346253229975
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 26
+Number of block comments per function 0
+===================
+maze.js
+===================
+Number of line comments per total number of lines of code 0.0375
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 1.5
+Number of block comments per function 0
+===================
+mazeMenu.js
+===================
+Number of line comments per total number of lines of code 0.18829516539440203
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 8.222222222222221
+Number of block comments per function 0
+===================
+mazeModel.js
+===================
+Number of line comments per total number of lines of code 0.19745222929936307
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 3.875
+Number of block comments per function 0
+===================
+mazeRender.js
+===================
+Number of line comments per total number of lines of code 0.22483221476510068
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 13.4
+Number of block comments per function 0
+===================
+trailModel.js
+===================
+Number of line comments per total number of lines of code 0.11413043478260869
+Number of block comments per total number of lines of code 0
+Number of line comments per number of function 1.75
+Number of block comments per function 0
+===================
+exit task 6c168e2f-7b45-4687-918a-c87b7d167c5f 0

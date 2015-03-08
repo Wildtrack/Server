@@ -1,0 +1,152 @@
+
+]0;root@623c8f5444e1: /mazeroot@623c8f5444e1:/maze# [Knpm test;echo exit task aec394e0-2d1b-45c2-9b20-5635034 1f230 $?
+
+> test@0.0.0 test /maze
+> npm run mocha && npm run jshint
+
+
+> test@0.0.0 mocha /maze
+> istanbul cover ./node_modules/.bin/_mocha -- -u bdd -R spec
+
+
+[0m[0m
+[0m  BACKTRACK TESTS[0m
+[0m    Backtrack model constructor[0m
+[2K[0G    [32m  ✓[0m[90m Check that on construction the tree is null [0m
+[0m    backtrack.setRoot()[0m
+[0m      Set root to first position[0m
+[2K[0G      [32m  ✓[0m[90m Check that on setting x to 1 it is 1 [0m
+[2K[0G      [32m  ✓[0m[90m Check that on setting y to 2 it is 2 [0m
+[0m      Set root again, should not be possible[0m
+[2K[0G      [32m  ✓[0m[90m Check that on setting x to 3 it is 1 [0m
+[2K[0G      [32m  ✓[0m[90m Check that on setting y to 3 it is 2 [0m
+[0m    backtrack.onTrack()[0m
+[0m      Move cursor to position 5,5[0m
+[2K[0G      [32m  ✓[0m[90m Check that no new node added. [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is no value(-1) [0m
+[0m      Move cursor to position 1,2[0m
+[2K[0G      [32m  ✓[0m[90m Check that no new node added. [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is no value(-1) [0m
+[0m      Move cursor to 3,2[0m
+[2K[0G      [32m  ✓[0m[90m Check that no new node added. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[0m      Move cursor to 5,2 [0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that no new node added. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[0m      Move cursor y++ [0m
+[2K[0G      [32m  ✓[0m[90m Check that new node added at 5,2. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that pointer direction is correct [0m
+[0m      Move cursor x-- [0m
+[2K[0G      [32m  ✓[0m[90m Check that new node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that pointer direction is correct [0m
+[0m      Move cursor x-- again [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[0m      Backtrack on x and move x++[0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check node revisited [0m
+[0m      Backtrack on x and move x++ again[0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check node revisited [0m
+[0m      Backtrack on x and move y--[0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check node revisited [0m
+[0m      Move to 3,2[0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check node revisited [0m
+[0m      Move to 3,3[0m
+[2K[0G      [32m  ✓[0m[90m Check whether this is a new trail, false is new trail [0m
+[2K[0G      [32m  ✓[0m[90m Check that last node added at 5,3. [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastX has changed [0m
+[2K[0G      [32m  ✓[0m[90m Check that lastY is the same [0m
+[2K[0G      [32m  ✓[0m[90m Check that current direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that backtrack direction is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check node revisited [0m
+
+[0m  MAZEMODEL TESTS[0m
+[0m    Maze constructor tests[0m
+[0m      Maze(null)[0m
+[2K[0G      [32m  ✓[0m[90m Check the constructed maze length is correct [0m
+[2K[0G      [32m  ✓[0m[90m Check that constructed maze width is correct [0m
+[0m      Maze(parameters)[0m
+[2K[0G      [32m  ✓[0m[90m Check board width is what was constructed [0m
+[2K[0G      [32m  ✓[0m[90m Check board height is what was constructed [0m
+[2K[0G      [32m  ✓[0m[90m Check that maze width is what was constructed [0m
+[2K[0G      [32m  ✓[0m[90m Check that maze height is what was constructed [0m
+[0m    Maze.makeAccessible()[0m
+[2K[0G    [32m  ✓[0m[90m Check if exits are made accessible they are accessible [0m
+[2K[0G    [32m  ✓[0m[90m Check north accessibility [0m
+[2K[0G    [32m  ✓[0m[90m Check west accessibility [0m
+[2K[0G    [32m  ✓[0m[90m After making another location accessible is it? [0m
+[0m    Maze.accessibleExits()[0m
+[2K[0G    [32m  ✓[0m[90m Accessible exits should report correct exits [0m
+[0m    Maze.onlyOneDir()[0m
+[2K[0G    [32m  ✓[0m[90m Tests only one dir with one direction. [0m
+[2K[0G    [32m  ✓[0m[90m Tests only one dir with two directions. [0m
+[0m    Maze.movePlayer()[0m
+[2K[0G    [32m  ✓[0m[90m Try to move the player south. [0m
+[2K[0G    [32m  ✓[0m[90m Check that movement has occurred. [0m
+[2K[0G    [32m  ✓[0m[90m Try to move player south when the south is blocked [0m
+[2K[0G    [32m  ✓[0m[90m Check that not movement has occurred [0m
+[0m    Maze.hasPlayerWon()[0m
+[0m      Player has not won yet[0m
+[2K[0G      [32m  ✓[0m[90m Do we start the game having won? [0m
+[2K[0G      [32m  ✓[0m[90m Is our position what we expect? [0m
+[0m      Player has won[0m
+[2K[0G      [32m  ✓[0m[90m After moving south have we won? [0m
+[2K[0G      [32m  ✓[0m[90m Are we where we expect to be after moving south? [0m
+
+
+[92m [0m[32m 90 passing[0m[90m (208ms)[0m
+
+=============================================================================
+Writing coverage object [/maze/coverage/coverage.json]
+Writing coverage reports at [/maze/coverage]
+=============================================================================
+
+=============================== Coverage summary ===============================
+[91mStatements   : 29.41% ( 190/646 )[0m
+[91mBranches     : 31.83% ( 106/333 )[0m
+[91mFunctions    : 23.94% ( 17/71 )[0m
+[91mLines        : 30.32% ( 188/620 )[0m
+================================================================================
+
+> test@0.0.0 jshint /maze
+> jshint . --reporter node_modules/jshint-html-reporter/reporter.js > report.html ;true
+
+exit task aec394e0-2d1b-45c2-9b20-56350341f230 0

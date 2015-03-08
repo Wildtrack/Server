@@ -49,7 +49,23 @@ server = http.createServer(function (req, res) {		//creates http server
 
 	    console.log(req.headers);  //log headers of req object
       
-        if(req.headers.referer != undefined){
+      if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
+          
+          createBuildList(undefined);                       
+
+          buildNode[count] = new buildTracker(d);
+
+          dockerRun(buildNode[count]);
+
+          count++;
+
+          var string = "Please visit http://".concat(req.headers.host);         //reply to github webhook with url to retreivable build status
+          string = string.concat(" to view your build status and result.");
+
+          res.end(string);                        //reponse 
+
+      }else{                                                //if it's not a github webhook output build history 
+          if(req.headers.referer != undefined){
           
           var reqURL = url.parse(req.headers.referer);
 
@@ -66,62 +82,11 @@ server = http.createServer(function (req, res) {		//creates http server
 
           createBuildList(undefined);                       
 
-          buildNode[count] = new buildTracker(d);
-
-          dockerRun(buildNode[count]);
-
-          count++;
          }
-      // if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
-          
-      //     var build_history = "Build Results, Most Recent First:\n\n";          //start creating build history
-      //     build_history = build_history.concat("Build On: ");
-      //     build_history = build_history.concat(d);
-      //     build_history = build_history.concat("---------------------------\n\nDocker Node---------------------- \n\n");
-
-      //     pull_docker(build_history);                             //pull docker and start build
-
-      //     var string = "Please visit http://".concat(req.headers.host);         //reply to github webhook with url to retreivable build status
-      //     string = string.concat(" to view your build status and result.");
-
-      //     res.end(string);                        //reponse 
-
-      // }else{                                                //if it's not a github webhook output build history 
-      //     fs.exists('history.txt', function(exists) {
-
-      //         if(exists){
-      //           fs.readFile('history.txt', function read(err,data){
-      //             if(err){
-      //               console.log(err)
-      //               res.end(err);
-      //             }else{
-      //               res.end(data);
-      //             }
-      //           });
-      //         }else{
-      //           res.end("There have been no builds thus far.")
-      //         }
-      //     });
-      // }
+      }
 
       var fsPath = './www/index.html';  //baseDirectory+requestUrl.pathname
 
-      // fs.exists(fsPath, function(exists) {           //tried streaming but didn't seem to work
-      //     try {
-      //       if(exists) {
-      //           res.writeHead(200, {"Content-Type":"text/html"});
-      //           fs.createReadStream(fsPath).pipe(res) 
-      //           console.log('tried to pass index.html');
-      //       } else {
-      //           res.writeHead(500)
-      //           console.log('had an error');
-      //       }
-      //     } finally {
-      //       res.end() // inside finally so errors don't make browsers hang
-      //     } 
-      //  })
-
-      
 
       if (req.url.indexOf('jquery.min.js') != -1) {                               //find correct files for webapp
         fs.readFile('./www/js/jquery.min.js', function (err, data) {
@@ -213,10 +178,6 @@ server = http.createServer(function (req, res) {		//creates http server
              }
           });
       }
-      //})
-
-
-//-------------------Docker build stuff
   
 	}
 });
@@ -235,8 +196,6 @@ emitter
 
 function dockerRun(b){                 //run docker commands 
   
-    
-
   b.ds.start({
           Image: 'meneal/buildbox'
       }).then(function (stream) {
@@ -270,7 +229,7 @@ function dockerRun(b){                 //run docker commands
           return b.ds.run('npm install');
       // }).then(function () {                            //grunt build ommited for now
       //     console.log('---> run grunt');
-      //     return b.ds.run('grunt');ß
+      //     return b.ds.run('grunt');
       }).then(function (){
           b.log.unpipe(b.buildStream);
           b.buildStream.end();
@@ -366,7 +325,7 @@ function createBuildList(build){
 
   }else{
       fs.writeFileSync('./www/js/site.js', str);
-  }
+  }         //create build history list for webapp
 }
 
 function textToHtml(data, tag){
@@ -378,7 +337,7 @@ function textToHtml(data, tag){
   while(data.indexOf('\n') != -1){
         index = data.indexOf('\n')
 
-        temp = data.substring(0, index-1).replace(/[\r]+/g, '');
+        temp = data.substring(0, index).replace(/[\r]+/g, '');
 
         if(temp != ''){
           str = str + '\n $("' + tag + '").append(' + "'<p>" + temp + "<\p>');";
@@ -391,7 +350,7 @@ function textToHtml(data, tag){
 
   str = str + '\n $("' + tag + '").append(' + "'<p>" + temp + "<\p>');";
 
-  return str;
+  return str;          //generating html friendly text for webapp 
 }
 
 function rejectionCheck(b){
@@ -436,7 +395,7 @@ function rejectionCheck(b){
 
   }else {str = "Accepted"}
 
-  fs.writeFileSync(b.dir + '/reject.txt', str);
+  fs.writeFileSync(b.dir + '/reject.txt', str);               
 }
 
 createBuildList(undefined);

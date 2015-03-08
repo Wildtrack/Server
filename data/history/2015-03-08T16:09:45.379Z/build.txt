@@ -1,0 +1,15 @@
+
+]0;root@1f6bdfcb1a02: /mazeroot@1f6bdfcb1a02:/maze# [Knpm install;echo exit task bb5a1826-af0d-42bf-97b4-51ab bc7b3c2e $?
+[37m[40mnpm[0m [0m[30m[43mWARN[0m [0m[35mpackage.json[0m test@0.0.0 No repository field.
+[0m
+> contextify@0.1.13 install /maze/node_modules/jsdom/node_modules/contextify
+> node-gyp rebuild
+
+Killed
+exit task bb5a1826-af0d-42bf-97b4-51abbc7b3c2e 137
+]0;root@1f6bdfcb1a02: /mazeroot@1f6bdfcb1a02:/maze# [Kmake: Entering directory `/maze/node_modules/jsdom/node_modules/contextify/build'
+  CXX(target) Release/obj.target/contextify/src/contextify.o
+  SOLINK_MODULE(target) Release/obj.target/contextify.node
+  SOLINK_MODULE(target) Release/obj.target/contextify.node: Finished
+  COPY Release/contextify.node
+make: Leaving directory `/maze/node_modules/jsdom/node_modules/contextify/build'
