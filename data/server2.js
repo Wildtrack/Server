@@ -20,7 +20,6 @@ var Docker = require("docker-exec");
 var buildNode = [];
 
 var count = 0;
-//var wstream = fs.createWriteStream('testStream.txt');
 
 function buildTracker(date) {        //object aggregates docker object, streams, and writable folder/files
 
@@ -35,9 +34,8 @@ function buildTracker(date) {        //object aggregates docker object, streams,
 
   this.buildStream = fs.createWriteStream("./" + this.dir + '/build.txt');
   this.firstTestStream = fs.createWriteStream("./" + this.dir + '/firstTest.txt');
-  
-  //skip second test for now
-  //this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');ß
+  this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');
+  this.commentCheckStream = fs.createWriteStream("./" + this.dir + '/commentCheck.txt');
 }
 
 server = http.createServer(function (req, res) {		//creates http server 
@@ -50,22 +48,30 @@ server = http.createServer(function (req, res) {		//creates http server
 	    console.log(d);				//log date and time to terminal 
 
 	    console.log(req.headers);  //log headers of req object
-
       
-      if(req.headers.referer != undefined){
-        
-        var reqURL = url.parse(req.headers.referer);
+        if(req.headers.referer != undefined){
+          
+          var reqURL = url.parse(req.headers.referer);
 
-        console.log("Pathname" + reqURL.pathname);
-        console.log(reqURL);
+          console.log("Pathname" + reqURL.pathname);
+          console.log(reqURL);
 
-        if(reqURL.pathname.length > 1){
+          if(reqURL.pathname.length > 1){
 
-          buildPick = reqURL.pathname.substring(1, reqURL.pathname.length);
+            buildPick = reqURL.pathname.substring(1, reqURL.pathname.length);
 
-          createBuildList(parseInt(buildPick, 10));
-        }
-      }    
+            createBuildList(parseInt(buildPick, 10));
+          }
+         }else {                                              //builds on any request that is not a request for previous build history
+
+          createBuildList(undefined);                       
+
+          buildNode[count] = new buildTracker(d);
+
+          dockerRun(buildNode[count]);
+
+          count++;
+         }
       // if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
           
       //     var build_history = "Build Results, Most Recent First:\n\n";          //start creating build history
@@ -115,7 +121,9 @@ server = http.createServer(function (req, res) {		//creates http server
       //     } 
       //  })
 
-      if (req.url.indexOf('jquery.min.js') != -1) {
+      
+
+      if (req.url.indexOf('jquery.min.js') != -1) {                               //find correct files for webapp
         fs.readFile('./www/js/jquery.min.js', function (err, data) {
             if (err) console.log(err);
             else {
@@ -209,11 +217,7 @@ server = http.createServer(function (req, res) {		//creates http server
 
 
 //-------------------Docker build stuff
-      // buildNode[count] = new buildTracker(d);
-
-      // dockerRun(buildNode[count]);
-
-      // count++;
+  
 	}
 });
 
@@ -231,9 +235,12 @@ emitter
 
 function dockerRun(b){                 //run docker commands 
   
+    
+
   b.ds.start({
           Image: 'meneal/buildbox'
       }).then(function (stream) {
+
           stream.pipe(b.log);
       // }).then(function() {                   //mounting bugs
       //     console.log('---> run -v /home/vagrant/data:/vol meneal/buildbox');                 //docker exec doesnt handle the mounting
@@ -242,6 +249,9 @@ function dockerRun(b){                 //run docker commands
       //         emitter.emit('error', error)
       //       }
       //     });
+      }).then(function () {
+          console.log('---> apt-get install wget\n');
+          return b.ds.run('apt-get install wget');
       }).then(function () {
           console.log('---> run apt-get update\n');
           return b.ds.run('apt-get update');
@@ -277,22 +287,32 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           b.log.unpipe(b.firstTestStream);
           b.firstTestStream.end();
-      // }).then(function (){                             //since mounting is not working this won't work
-      //     console.log('----> cp ../stuff/main.js main.js');  
-      //     return b.ds.run('cp ../stuff/main.js main.js')
-      // }).then(function (){
-      //     console.log('----> node main.js backtrack.js');
-      //     return b.ds.run('node main.js backtrack.js');
-      // }).then(function (){
-      //     console.log('----> node main.js backtrack.js');
-      //     return b.ds.run('node main.js backtrack.js'); 
-      // }).then(function (){
-      //     console.log('----> npm test');
-      //     b.log.pipe(b.secondTestStream);
-      //     return b.ds.run('npm test');
-      // }).then(function (){
-      //     b.log.unpipe(b.secondTestStream);
-      //     b.secondTestStream.end();
+      }).then(function (){                             //since mounting is not working this won't work
+          console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');  
+          return b.ds.run('wget https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');
+      }).then(function (){
+          console.log('----> node main.js backtrack.js');
+          return b.ds.run('node main.js backtrack.js');
+      }).then(function (){
+          console.log('----> npm test');
+          b.log.pipe(b.secondTestStream);
+          return b.ds.run('npm test');
+      }).then(function (){
+          b.log.unpipe(b.secondTestStream);
+          b.secondTestStream.end();
+       }).then(function (){                             //since mounting is not working this won't work
+          console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js');  
+          return b.ds.run('wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js')
+      }).then(function (){
+          console.log('node commentCheck.js backtrack.js main.js maze.js mazeMenu.js mazeModel.js mazeRender.js trailModel.js');
+          b.log.pipe(b.commentCheckStream);
+          return b.ds.run('node commentCheck.js backtrack.js main.js maze.js mazeMenu.js mazeModel.js mazeRender.js trailModel.js');
+      }).then(function (){
+          b.log.unpipe(b.commentCheckTestStream);
+          b.commentCheckStream.end();
+      }).then(function (){
+          console.log("---> checking rejection status");
+          rejectionCheck(b);
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           return b.ds.stop();
@@ -308,56 +328,93 @@ function dockerRun(b){                 //run docker commands
 
 function createBuildList(build){
 
+  var files = fs.readdirSync('./history')
 
+  var str = '';
 
-  fs.readdir('./history', function(err, files){
+  for(var i = 1; i < files.length; i++){
 
-    var str = '';
+    str = str + '\n $(".placeholder").append(' + "'<li><a href=" + '"' + i + '">' + files[i] + "</a></li>');";
+  }
 
-    for(var i = 1; i < files.length; i++){
+  console.log(str);
 
-      str = str + '\n $(".placeholder").append(' + "'<li><a href=" + '"' + i + '">' + files[i] + "</a></li>');";
-    }
+  if(build != undefined  && fs.existsSync('./history/' + files[build] + '/reject.txt')){
+     var dirPath = './history/' + files[build];
 
-    console.log(str);
+     data = fs.readFileSync(dirPath + '/build.txt')                                  //probably use Sync instead
 
-    if(build != undefined){
-      var dirPath = './history/' + files[build];
+     str = str + textToHtml(data, ".buildHERE");
 
-      fs.readFile(dirPath + '/build.txt', function(err, data){                                  //probably use Sync instead
+     data = fs.readFileSync(dirPath + '/firstTest.txt')                                  //probably use Sync instead
 
-        if(err) console.log(err);
+     str = str + textToHtml(data, ".testHERE");
 
-        data = data.toString().replace(/['"]+/g, '');                                           //temp fix to deal with improper formatting for html
+     data = fs.readFileSync(dirPath + '/secondTest.txt')                                  //probably use Sync instead
 
-        //data = data.replace(/[\n]+/g, '                   ');
+     str = str + textToHtml(data, ".secondtestHERE");
 
-        data = data.replace(/[^a-zA-Z 0-9]+/g,'');
+     data = fs.readFileSync(dirPath + '/commentCheck.txt') ;                                 //probably use Sync instead
 
-        str = str + '\n $(".buildHERE").append(' + "'" + data + "');";
+     str = str + textToHtml(data, ".commentcheckHERE");
 
-        fs.readFile(dirPath + '/firstTest.txt', function(err, data){
+     data = fs.readFileSync(dirPath + '/reject.txt');
 
-          if(err) console.log(err);
+     str = str + textToHtml(data, ".rejectHERE");
 
-          data = data.toString().replace(/['"]+/g, '');
+     fs.writeFileSync('./www/js/site.js', str);
 
-          //data = data.replace(/[\n]+/g, '                   ');
-
-          data = data.replace(/[^a-zA-Z 0-9]+/g,'');
-
-          str = str + '\n $(".testHERE").append(' + "'" + data + "');";
-
-          fs.writeFile('./www/js/site.js', str);
-        })
-      })
-    }else{
-      fs.writeFile('./www/js/site.js', str);
-    }
-  })
+  }else{
+      fs.writeFileSync('./www/js/site.js', str);
+  }
 }
 
+function textToHtml(data, tag){
 
+  var str = ''
+
+  data = data.toString().replace(/['"]+/g, '');
+
+  while(data.indexOf('\n') != -1){
+        index = data.indexOf('\n')
+
+        temp = data.substring(0, index-1).replace(/[\r]+/g, '');
+
+        if(temp != ''){
+          str = str + '\n $("' + tag + '").append(' + "'<p>" + temp + "<\p>');";
+        }
+
+        data = data.substring(index+1, data.length);
+  }        
+
+  temp = data.replace(/[\r]+/g, '');                              
+
+  str = str + '\n $("' + tag + '").append(' + "'<p>" + temp + "<\p>');";
+
+  return str;
+}
+
+function rejectionCheck(b){
+
+  data = fs.readFileSync( b.dir  + '/secondTest.txt').toString();
+
+  data = data.replace(/[\r]+/g, '');
+  data = data.replace(/[\n]+/g, '');
+  data = data.replace(/[ ]+/g, '');
+
+  index = data.indexOf('Statements:');
+
+  coverage = data.substring(index+11, index + 16);
+
+  percent = parseFloat(coverage, 10);
+
+  console.log(percent);
+
+  if(percent < 50){ str = "Rejected(Statement Coverage below 50%)"
+  }else {str = "Accepted"}
+
+  fs.writeFileSync(b.dir + '/reject.txt', str);
+}
 
 createBuildList(undefined);
 
@@ -374,136 +431,7 @@ function puts(error, stdout, stderr) {
   }
 }
 
-//Docker build machine---------------------------
-function pull_docker(build_history){                //pulls docker if its not present keeps track of build status 
 
-  console.log("Pulling docker");
-
-  exec(util.format("sudo docker pull meneal/buildbox"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-      build_history = build_history.concat(error)
-    } else {
-      emitter.emit('info', stdout.trim());
-      build_history = build_history.concat(stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-        build_history = build_history.concat(stderr.trim());
-      }
-
-      build_history = build_history.concat("\n\nDependency Install, Grunt Build and Test--------------------------\n\n")
-
-      run_docker(build_history)
-     
-    }    
-  });
-}
-
-function run_docker(build_history){           //run docker with build script and test script run docker -> npm install -> bower install -> grunt build and test
-
-  console.log("Running docker");
-
-  exec(util.format("sudo docker run -v /home/vagrant/data:/vol meneal/buildbox sh -c /vol/dockerbook2.sh"), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-      build_history = build_history.concat(error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      build_history = build_history.concat(stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-        build_history = build_history.concat(stderr.trim());
-      }
-
-      fs.exists('history.txt', function(exists){              //writes to history file and history status is accessible through http
-        if(exists){
-          fs.readFile('history.txt', function read(err,data){         
-            if(err){
-              console.log(err)
-              res.end(err);
-            }else{
-              build_history = build_history.concat(data);
-
-              fs.writeFile('history.txt', build_history);          
-            }
-          });
-        }else{
-          fs.writeFile('history.txt', build_history);
-        }  
-      });
-
-    }
-  });
-}
-
-//------Local Build (currently not used)
-
-function git_clone(url, dir) {      //clone to data/repo/
-
-	exec(util.format('git clone %s %s', url, dir), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    console.log("Changing to Directory"); //change to repo directory
-  
-    console.log('Starting directory: ' + process.cwd());
-    try {
-      process.chdir(temp_directory);
-      console.log('New directory: ' + process.cwd());
-    }
-    catch (err) {
-      console.log('chdir: ' + err);
-    }
-
-    console.log("npm install");
-
-    npm_install();
-  });
-}
-
-function npm_install(){     //npm install, installs dependencies from package.json
-
-  exec(util.format('npm install'), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-    console.log("Running bower install");
-    bower_install();
-  });
-}
-
-
-function bower_install(){     //install all bower dependencies  
-  exec(util.format('bower install'), function (error, stdout, stderr) {
-    if (error) {
-      emitter.emit('error', error);
-    } else {
-      emitter.emit('info', stdout.trim());
-      if (stderr) {
-        emitter.emit('error', stderr.trim());
-      }
-    }
-
-    console.log("Running grunt");
-    run_grunt();
-  });
-}
-
-
-function run_grunt(){         //runs grunt "Done, without errors = success"
-  exec(util.format('grunt'), puts);
-}
 
 //-----------------------
 
