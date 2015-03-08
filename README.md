@@ -50,7 +50,7 @@ Once the server is up and vagrant share has been run the server state is visible
 
 Screenshot of the initial state of the server:
 
-![InitialState]()
+![InitialState](https://github.com/Wildtrack/Server/blob/Test/img/CoverOne.png)
 
 We are using building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
 
@@ -73,7 +73,7 @@ Our tests are run in [mocha](http://http://mochajs.org/), coverage is in [istanb
 
 Istanbul coverage:
 
-![Istanbul](https://github.com/Wildtrack/Server/blob/Test/img/Istanbul.png)
+![Istanbul](https://github.com/Wildtrack/Server/blob/Test/img/CoverOne.png)
 
 JShint static analysis:
 
