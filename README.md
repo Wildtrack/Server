@@ -50,7 +50,7 @@ Once the server is up and vagrant share has been run the server state is visible
 
 Screenshot of the initial state of the server:
 
-![InitialState](https://github.com/Wildtrack/Server/blob/Test/img/CoverOne.png)
+![InitialState](https://github.com/Wildtrack/Server/blob/Test/img/InitialState.png)
 
 We are using building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
 
@@ -98,7 +98,7 @@ Additionally the second run through displays a static analysis tool we built for
 
 ![CommentCheck](https://github.com/Wildtrack/Server/blob/Test/img/CommentCheck.png)
 
-A rule was generated to reject the build if statement coverage is below 50% in the second run as shown in the screenshot below:
+A rule was generated to reject the build if statement coverage is below 50% in the second run as shown in the screenshot below in the status section:
 
 ![Rejected](https://github.com/Wildtrack/Server/blob/Test/img/Rejected.png)
 
