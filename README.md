@@ -44,7 +44,7 @@ Log in the Vagrant Cloud/Atlas name and password.  Then run:
 
 A url will be displayed after vagrant share has run, a screenshot is below:
 
-![VagrantShare]	
+![VagrantShare](https://github.com/Wildtrack/Server/blob/Test/img/VagrantShare.png)	
 
 Once the server is up and vagrant share has been run the server state is visible at the vagrant share address.  The buttons at the top of the page are currently nonfunctional.
 
@@ -90,7 +90,7 @@ To separate the two runs there is a dividing line as shown below:
 
 ![Divider](https://github.com/Wildtrack/Server/blob/Test/img/Divider.png)
 
-The second run, for extended analysis, utilizes the main.js script found [here].  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
+The second run, for extended analysis, utilizes the main.js script found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
 
 ![CoverTWo](https://github.com/Wildtrack/Server/blob/Test/img/CoverTwo.png)
 
