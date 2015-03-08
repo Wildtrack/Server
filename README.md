@@ -1,8 +1,7 @@
 #Wildtrack Build Server
 
-This build server was constructed from a main Vagrant box that runs a nodejs http server and a series of Docker nodes that run build scripts to build a javascript webapp using nodejs, grunt, and bower.  The current setup is builds the repo [here](https://github.com/Wildtrack/MiniProject1) from CSC510 but could be easily applied to other nodejs projects.  The server is brought online in Vagrant and then forwarded through Vagrant to a public URL.  That URL is placed in a git hook within the repo.  Once all of that takes place the server runs everything automatically.  The sequence of events during a push is push event, github webhook to server, server response, spawn docker, clone repo in docker, npm install in docker, grunt build and test in docker, output of build status saved from docker in the nodejs server and made accessible through http.  Everything is automatically reset with the only artifact remaining being the build history (available through http).   
-
-Whenever there is a push the server builds the project in parallel Docker nodes.  The output of the build is displayed in the local server [URL](http://localhost:2234) and through the vagrant share URL accessible from anywhere.  Every time the server runs the build it is on a fresh Docker buildbox, so there is no need for any clean functionality.  Whenver there ceases to be a need for the build server vagrant destroy removes everything.
+##Setup
+Setup is very similar to the original iteration of the build server created for milestone 1.  The information below is a carryover from M1 with a few changes.
 
 ##Prerequisites:  
 Requires Ansible and Vagrant.  Installation information is in the notes below.
@@ -28,7 +27,10 @@ Screenshot of response from command:
 In the vagrant box run:
 	
 	cd data/
-	node server.js
+	npm install
+	sudo node server2.js
+
+This command has changed because we are now running commands from within the nodejs server using [docker-exec](https://www.npmjs.com/package/docker-exec). Furthermore, we changed the name of the server file to server2.js.  Sudo is necessary for this command as well since docker-exec requires the command starting the software have root access.
 	
 In the host OS go to this [URL](http://localhost:2234) to test to see if the server is running.
 
@@ -40,30 +42,66 @@ Log in the Vagrant Cloud/Atlas name and password.  Then run:
 
 	vagrant share
 
-	
-Add the url to a repo webhook [here](https://github.com/Wildtrack/MiniProject1/settings/hooks).  
+A url will be displayed after vagrant share has run, a screenshot is below:
 
-Screenshot of response from command:
+![VagrantShare]	
+
+Once the server is up and vagrant share has been run the server state is visible at the vagrant share address.  The buttons at the top of the page are currently nonfunctional.
+
+Screenshot of the initial state of the server:
+
+![InitialState]()
+
+We are using building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
+
 ![Webhook](https://github.com/Wildtrack/Server/blob/master/img/Webhook.png)
 
 Push to the repo, or use the redeliver button to trigger a build.  The image below shows the redeliver button.
 
 ![Redeliver](https://github.com/Wildtrack/Server/blob/master/img/Redeliver.png)
 
-Below a github webhook triggering on a push event:
-![GithubWebHook](https://github.com/Wildtrack/Server/blob/master/img/githook_request.png )
+Once the webhook has been added the server will be immediately pinged as if a commit had been made.  The build reports are given in order from oldest to newest on the left side of the page in blue.  Upon clicking the date and time the full report is given. 
 
-In the host OS go to the vagrant url supplied in the body of the github webhook response or this [URL](http://localhost:2234) to see the output of the buildscript.
 
-![WebHookResponse](https://github.com/Wildtrack/Server/blob/master/img/githook_response.png)
+##Test
 
-The build and testing results are saved so the whole history can be viewed (most recent first).  Below shows dependency install results using node package manager.
+This section explains the data in the web page that is displayed by the server.
 
-![BuildHistory](https://github.com/Wildtrack/Server/blob/master/img/build_history.png)
+Our tests are run in [mocha](http://http://mochajs.org/), coverage is in [istanbul](https://github.com/gotwarlost/istanbul), and static analysis is done with [jshint](http://http://jshint.com/).  The mocha tests are shown below:
 
-Below shows the results of a grunt build and test using jshint.
+![Mocha](https://github.com/Wildtrack/Server/blob/test/img/Mocha.png)
 
-![GruntTest](https://github.com/Wildtrack/Server/blob/master/img/build_history_grunt.png)
+Istanbul coverage:
+
+![Istanbul](https://github.com/Wildtrack/Server/blob/test/img/Istanbul.png)
+
+JShint static analysis:
+
+![jshint](https://github.com/Wildtrack/Server/blob/test/img/jshint.png)
+
+##Analysis
+
+The entire test suite including Mocha, Istanbul, and JShint is run twice.  The first run, for base analysis, produces the following base coverage report by running istanbul on the entire set of javascript files in the root against the handrwritten mocha tests.  A few exceptions are for the canvasengine and jquery modules, and the maze.js file.  The exception of maze.js is based on the fact that it needs canvasengine which is only available in the browser and causes istanbul to fail:
+
+![CoverOne](https://github.com/Wildtrack/Server/blob/test/img/CoverOne.png)
+
+
+To separate the two runs there is a dividing line as shown below:
+
+![Divider](https://github.com/Wildtrack/Server/blob/test/img/Divider.png)
+
+The second run, for extended analysis, utilizes the main.js script found [here].  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
+
+![CoverTWo](https://github.com/Wildtrack/Server/blob/test/img/CoverTwo.png)
+
+Additionally the second run through displays a static analysis tool we built for the server.  The file is called commentChecker.js, and it is run against all of the javascript files in the root of the project with the same exception for canvasengine, and jquery.  The tool was developed using esprima and displays he nuber of line comments per total number of lines of code, number of of block comments per total number of lines of code, number of line comments per function, and number of block comments per function. CommentChecker.js is found [here](https://github.com/Wildtrack/Server/blob/Test/data/commentCheck.js).  A screenshot of the commentChecking functionality is found below:
+
+![CommentCheck](https://github.com/Wildtrack/Server/blob/test/img/CommentCheck.png)
+
+A rule was generated to reject the build if statement coverage is below 50% in the second run as shown in the screenshot below:
+
+![Rejected](https://github.com/Wildtrack/Server/blob/test/img/Rejected.png)
+
 
 Whenever you are done with the server run:
 
@@ -82,17 +120,6 @@ Vagrant install:  The install information is [here](https://docs.vagrantup.com/v
 
 Go here to create a Vagrant Cloud/Atlas account: [Vagrant Cloud](https://atlas.hashicorp.com/boxes/search?utm_source=vagrantcloud.com&vagrantcloud=1)
 
-##Evaluation Summary
-
-Triggered Builds - Performed by github webhook and triggered during push event.  Nodejs server receives webhook, verifies the github webhook is the request and starts the building process.
-
-Dependency Management - Vagrant and docker come with all dependencies needed to run the server are made ready by ansible.  Dependency management for the project being buld is performed by npm install and bower.
-
-Build Script Execution - Performed by ansible, shell scripts, and nodejs server.  Build also performed by grunt.  Nodejs launches docker using one shell script to pull docker and another to send docker a shell script for execution.  In docker, builds are performed by grunt. 
-
-Multiple Nodes - The nodejs spawns multiple docker nodes if multiple requests are made, each with their own build instances and results.
-
-Status - Status is accessible either through localhost or url supplied by vagrant share(which redirects to the running nodejs server)
 
 
 
