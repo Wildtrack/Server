@@ -86,7 +86,7 @@ The entire test suite including Mocha, Istanbul, and JShint is run twice.  The f
 ![CoverOne](https://github.com/Wildtrack/Server/blob/Test/img/CoverOne.png)
 
 
-To separate the two runs there is a dividing line as shown below:
+The second run of the tests begins with the line Test Report with Automated Test as shown below:
 
 ![Divider](https://github.com/Wildtrack/Server/blob/Test/img/Divider.png)
 
