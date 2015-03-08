@@ -408,9 +408,32 @@ function rejectionCheck(b){
 
   percent = parseFloat(coverage, 10);
 
+  data = fs.readFileSync( b.dir  + '/commentCheck.txt').toString();
+
+  data = data.replace(/[\r]+/g, '');
+  data = data.replace(/[\n]+/g, '');
+  data = data.replace(/[ ]+/g, '');
+
+  index = data.indexOf('function');
+
+  substrperfunction = data.substring(index+8, index+13);
+
+  perFunc = parseFloat(substrperfunction, 10);
+
   console.log(percent);
 
-  if(percent < 50){ str = "Rejected(Statement Coverage below 50%)"
+  if(percent < 50  || perFunc > 10){ 
+      
+      str = "Rejected";
+
+      if(percent < 50){
+        str = str + "\nStatement Coverage below 50%";
+      }
+
+      if(perFunc > 10){
+        str = str + "\nNumber of line comments per function greater than 10";
+      }
+
   }else {str = "Accepted"}
 
   fs.writeFileSync(b.dir + '/reject.txt', str);
