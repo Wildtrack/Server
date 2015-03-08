@@ -67,7 +67,7 @@ Once the webhook has been added the server will be immediately pinged as if a co
 
 This section explains the data in the web page that is displayed by the server.
 
-Our tests are run in [mocha](http://http://mochajs.org/), coverage is in [istanbul](https://github.com/gotwarlost/istanbul), and static analysis is done with [jshint](http://http://jshint.com/).  The mocha tests are shown below:
+Our tests are run in [mocha](http://mochajs.org/), coverage is in [istanbul](https://github.com/gotwarlost/istanbul), and static analysis is done with [jshint](http://jshint.com/).  The mocha tests are shown below:
 
 ![Mocha](https://github.com/Wildtrack/Server/blob/Test/img/Mocha.png)
 
@@ -90,7 +90,7 @@ The second run of the tests begins with the line Test Report with Automated Test
 
 ![Divider](https://github.com/Wildtrack/Server/blob/Test/img/Divider.png)
 
-The second run, for extended analysis, utilizes the main.js script found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
+The second run, for extended analysis, utilizes the main.js script found [here](https://github.com/Wildtrack/maze/blob/master/backtrack.js).  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
 
 ![CoverTWo](https://github.com/Wildtrack/Server/blob/Test/img/CoverTwo.png)
 
