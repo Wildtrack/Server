@@ -353,7 +353,7 @@ function textToHtml(data, tag){
   return str;          //generating html friendly text for webapp 
 }
 
-function rejectionCheck(b){
+function rejectionCheck(b){     //checks rejection gate for build
 
   data = fs.readFileSync( b.dir  + '/secondTest.txt').toString();
 
@@ -373,15 +373,24 @@ function rejectionCheck(b){
   data = data.replace(/[\n]+/g, '');
   data = data.replace(/[ ]+/g, '');
 
-  index = data.indexOf('function');
+  var perFuncTotal = 0;
+  var count = 0
 
-  substrperfunction = data.substring(index+8, index+13);
+  while(data.indexOf('function') != -1){
+    count++;
 
-  perFunc = parseFloat(substrperfunction, 10);
+    index = data.indexOf('function');
 
-  console.log(percent);
+    substrperfunction = data.substring(index+8, index+13);
 
-  if(percent < 50  || perFunc > 10){ 
+    perFuncTotal = perFuncTotal + parseFloat(substrperfunction, 10);
+
+    data = data.substring(index+8, data.length);
+  }
+
+  perFunc = perFuncTotal / count;
+
+  if(percent < 50  || perFunc < 3){ 
       
       str = "Rejected";
 
@@ -389,8 +398,8 @@ function rejectionCheck(b){
         str = str + "\nStatement Coverage below 50%";
       }
 
-      if(perFunc > 10){
-        str = str + "\nNumber of line comments per function greater than 10";
+      if(perFunc < 3){
+        str = str + "\nNumber of line comments per function less than 3";
       }
 
   }else {str = "Accepted"}

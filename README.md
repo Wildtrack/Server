@@ -4,7 +4,7 @@
 Setup is very similar to the original iteration of the build server created for milestone 1.  The information below is a carryover from M1 with a few changes.
 
 ##Prerequisites:  
-Requires Ansible and Vagrant.  Installation information is in the notes below.
+Requires Ansible and Vagrant.  Installation information is in the notes below.  If any of the directions are unclear please check the Master branch README.
 
 #Build
 
@@ -15,7 +15,7 @@ To build the project first clone the project and go to project directory and run
 Screenshot of response from command:
 ![VagrantUp](https://github.com/Wildtrack/Server/blob/master/img/VagrantUp.png)
 
-Note that Vagrant up takes a LONG TIME.  Don't CRTL-C, the script is working even if it seems like it's not.  The script will download the needed vagrant box, install everything that it needs, and pull the image for the Docker buildbox, so especially if it's the first time you've run it, it takes awhile.
+Note that Vagrant up takes a LONG TIME.  Don't CRTL-C, the script is working even if it seems like it's not.  The script will download the needed vagrant box, install everything that it needs, and pull the image for the Docker buildbox, so if it's the first time you've run it, it takes awhile.
 
 Next run:
 
@@ -30,7 +30,7 @@ In the vagrant box run:
 	npm install
 	sudo node server2.js
 
-This command has changed because we are now running commands from within the nodejs server using [docker-exec](https://www.npmjs.com/package/docker-exec). Furthermore, we changed the name of the server file to server2.js.  Sudo is necessary for this command as well since docker-exec requires the command starting the software have root access.
+This command has changed because we are now running commands from within the nodejs server using [docker-exec](https://www.npmjs.com/package/docker-exec). Furthermore, we changed the name of the server file to server2.js.  Sudo is necessary for this command as well since docker-exec requires the command so nodejs has root access to control docker.
 	
 In the host OS go to this [URL](http://localhost:2234) to test to see if the server is running.
 
@@ -46,13 +46,13 @@ A url will be displayed after vagrant share has run, a screenshot is below:
 
 ![VagrantShare](https://github.com/Wildtrack/Server/blob/Test/img/VagrantShare.png)	
 
-Once the server is up and vagrant share has been run the server state is visible at the vagrant share address.  The buttons at the top of the page are currently nonfunctional.
+Once the server is up and vagrant share has been run the server state is visible at the vagrant share address.  This is our revamped UI.  The buttons at the top of the page are currently placeholders.  The bar on the left will populate with ISOstring dates matching the builds when they are triggered from a git webhook.  The fields will populate with the results of the build when the build selected on the left.
 
 Screenshot of the initial state of the server:
 
 ![InitialState](https://github.com/Wildtrack/Server/blob/Test/img/InitialState.png)
 
-We are using building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
+We are building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
 
 ![Webhook](https://github.com/Wildtrack/Server/blob/master/img/Webhook.png)
 
@@ -81,7 +81,7 @@ JShint static analysis:
 
 ##Analysis
 
-The entire test suite including Mocha, Istanbul, and JShint is run twice.  The first run, for base analysis, produces the following base coverage report by running istanbul on the entire set of javascript files in the root against the handrwritten mocha tests.  A few exceptions are for the canvasengine and jquery modules, and the maze.js file.  The exception of maze.js is based on the fact that it needs canvasengine which is only available in the browser and causes istanbul to fail:
+The entire test suite including Mocha, Istanbul, and JShint is run twice.  The first run, for base analysis, produces the following base coverage report by running istanbul on the entire set of javascript files in the root against the handwritten mocha tests.  A few exceptions are for the canvasengine and jquery modules, and the maze.js file.  The exception of maze.js is based on the fact that it needs canvasengine which is only available in the browser and causes istanbul to fail:
 
 ![CoverOne](https://github.com/Wildtrack/Server/blob/Test/img/CoverOne.png)
 
@@ -90,11 +90,11 @@ The second run of the tests begins with the line Test Report with Automated Test
 
 ![Divider](https://github.com/Wildtrack/Server/blob/Test/img/Divider.png)
 
-The second run, for extended analysis, utilizes the main.js script found [here](https://github.com/Wildtrack/maze/blob/master/backtrack.js).  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It prodces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including them in the coverage report results in this coverage report:
+The second run, for extended analysis, utilizes the main.js script found [here](https://github.com/Wildtrack/maze/blob/master/backtrack.js).  This script is run against the backtrack.js file found [here](https://github.com/Wildtrack/Server/blob/Test/data/main.js).  It produces a set of tests inside the docker buildbox and runs coverage using those tests against the same set of files.  Including those tests, the coverage report results in this coverage report with increased coverage:
 
 ![CoverTWo](https://github.com/Wildtrack/Server/blob/Test/img/CoverTwo.png)
 
-Additionally the second run through displays a static analysis tool we built for the server.  The file is called commentChecker.js, and it is run against all of the javascript files in the root of the project with the same exception for canvasengine, and jquery.  The tool was developed using esprima and displays he nuber of line comments per total number of lines of code, number of of block comments per total number of lines of code, number of line comments per function, and number of block comments per function. CommentChecker.js is found [here](https://github.com/Wildtrack/Server/blob/Test/data/commentCheck.js).  A screenshot of the commentChecking functionality is found below:
+Additionally the second run through displays a static analysis tool we built for the server.  The file is called commentChecker.js, and it is run against all of the javascript files in the root of the project with the same exception for canvasengine, and jquery.  The tool was developed using esprima and displays the nuber of line comments per total number of lines of code, number of of block comments per total number of lines of code, number of line comments per function, and number of block comments per function. CommentChecker.js is found [here](https://github.com/Wildtrack/Server/blob/Test/data/commentCheck.js).  A screenshot of the commentChecking functionality is found below:
 
 ![CommentCheck](https://github.com/Wildtrack/Server/blob/Test/img/CommentCheck.png)
 
@@ -102,6 +102,8 @@ A rule was generated to reject the build if statement coverage is below 50% in t
 
 ![Rejected](https://github.com/Wildtrack/Server/blob/Test/img/Rejected.png)
 
+
+There is also a rule to reject the build if the average line comments per function is below 3.  The build rejection status is at the top of the build history.  
 
 Whenever you are done with the server run:
 
@@ -119,6 +121,13 @@ Ansible install:  The install information is [here](http://docs.ansible.com/intr
 Vagrant install:  The install information is [here](https://docs.vagrantup.com/v2/installation/)
 
 Go here to create a Vagrant Cloud/Atlas account: [Vagrant Cloud](https://atlas.hashicorp.com/boxes/search?utm_source=vagrantcloud.com&vagrantcloud=1)
+
+##Evaluation
+Unit Tests and Coverage - Unit tests done with mocha and coverage done with Istanbul
+Test Generation/Exploration Technique - Automated test generation and constraint based testing using Esprima (like HW2)
+Base Analysis - JSHint
+Extended Analysis - Check ratio of comments/block comments to functions/lines of code. 
+Gate - Build is rejected if code coverage is below 50% or comments per function is below 3.
 
 
 
