@@ -124,9 +124,13 @@ Go here to create a Vagrant Cloud/Atlas account: [Vagrant Cloud](https://atlas.h
 
 ##Evaluation
 Unit Tests and Coverage - Unit tests done with mocha and coverage done with Istanbul
+
 Test Generation/Exploration Technique - Automated test generation and constraint based testing using Esprima (like HW2)
+
 Base Analysis - JSHint
+
 Extended Analysis - Check ratio of comments/block comments to functions/lines of code. 
+
 Gate - Build is rejected if code coverage is below 50% or comments per function is below 3.
 
 
