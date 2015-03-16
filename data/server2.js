@@ -89,84 +89,26 @@ server = http.createServer(function (req, res) {		//creates http server
 
 
       if (req.url.indexOf('jquery.min.js') != -1) {                               //find correct files for webapp
-        fs.readFile('./www/js/jquery.min.js', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('jquery.min.js');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/javascript');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('bootstrap.min.js') != -1) {
-        fs.readFile('./www/js/bootstrap.min.js', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('bootstrap.min.js');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/javascript');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('docs.min.js') != -1) {
-        fs.readFile('./www/js/docs.min.js', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('docs.min.js');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/javascript');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('ie10-viewport-bug-workaround.js') != -1) {
-        fs.readFile('./www/js/ie10-viewport-bug-workaround.js', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('ie10-viewport-bug-workaround.js');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/javascript');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('site.js') != -1) {
-        fs.readFile('./www/js/site.js', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('site.js');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/javascript');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('bootstrap.min.css') != -1) {
-        fs.readFile('./www/css/bootstrap.min.css', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('/misc/myscript.js: fs.readFile is successful');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/css');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else if (req.url.indexOf('dashboard.css') != -1) {
-        fs.readFile('./www/css/dashboard.css', function (err, data) {
-            if (err) console.log(err);
-            else {
-                console.log('/misc/myscript.js: fs.readFile is successful');
-                res.setHeader("Content-Length", data.length);
-                res.setHeader("Content-Type", 'text/css');
-                res.statusCode = 200;
-                res.end(data);
-            }
-        });
-      }else {
+        handleLibs('./www/js/jquery.min.js', res);
 
+      }else if (req.url.indexOf('bootstrap.min.js') != -1) {
+        handleLibs('./www/js/bootstrap.min.js', res);
+
+      }else if (req.url.indexOf('docs.min.js') != -1) {
+        handleLibs('./www/js/docs.min.js', res);
+
+      }else if (req.url.indexOf('ie10-viewport-bug-workaround.js') != -1) {
+        handleLibs('./www/js/ie10-viewport-bug-workaround.js', res);
+
+      }else if (req.url.indexOf('site.js') != -1) {
+        handleLibs('./www/js/site.js', res);
+
+      }else if (req.url.indexOf('bootstrap.min.css') != -1) {
+        handleLibs('./www/css/bootstrap.min.css', res);
+
+      }else if (req.url.indexOf('dashboard.css') != -1) {
+        handleLibs('./www/css/dashboard.css', res);
+      }else {
         fs.readFile(fsPath, function(err, data){          //so instead just send the hwole file
             if(err){
                  res.writeHead(404,{"Content-type":"text/plain"});
@@ -174,13 +116,27 @@ server = http.createServer(function (req, res) {		//creates http server
              }else{
                  res.writeHead(202,{"Content-type":"text/html"});
                  res.end(data);
-
              }
           });
-      }
-  
+      }  
 	}
 });
+
+function handleLibs(file, res){             //finds lib and returns
+
+  fs.readFile(file, function (err, data) {
+            if (err) console.log(err);
+            else {
+                //console.log('jquery.min.js');
+                res.setHeader("Content-Length", data.length);
+                //res.setHeader("Content-Type", 'text/javascript');
+                res.statusCode = 200;
+                res.end(data);
+            }
+  });
+}
+
+
 
 server.listen(3000);				//listens to this port on guest VM
 
