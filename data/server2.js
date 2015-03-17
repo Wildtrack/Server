@@ -21,9 +21,15 @@ var buildNode = [];
 
 var count = 0;
 
-function buildTracker(date) {        //object aggregates docker object, streams, and writable folder/files
+function buildTracker(date, projectName) {        //object aggregates docker object, streams, and writable folder/files
 
-  this.dir = './history/' + date.toISOString();
+  projectName = projectName.replace("/", "_");
+
+  this.dir = './history/' + projectName;
+
+  fs.mkdirSync(this.dir);
+
+  this.dir =  this.dir + '/' + date.toISOString();
 
   fs.mkdirSync(this.dir);
 
@@ -51,13 +57,30 @@ server = http.createServer(function (req, res) {		//creates http server
       
       if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
           
-          createBuildList(undefined);                       
+          createBuildList(undefined); 
 
-          buildNode[count] = new buildTracker(d);
+          console.log(req.method)   
 
-          dockerRun(buildNode[count]);
+          var body = '';
 
-          count++;
+          req.on('data', function(data){
+            body += data;
+
+            if(body.length > 1e6) req.connection.destroy();
+          });
+
+          req.on('end', function(){
+            var post = JSON.parse(body);
+
+            count++;
+
+            console.log(post);
+
+            buildNode[count] = new buildTracker(d, post.repository.full_name);
+
+            dockerRun(buildNode[count], post.repository.html_url);
+            
+          });
 
           var string = "Please visit http://".concat(req.headers.host);         //reply to github webhook with url to retreivable build status
           string = string.concat(" to view your build status and result.");
@@ -150,7 +173,7 @@ emitter
     process.exit(1);
   });
 
-function dockerRun(b){                 //run docker commands 
+function dockerRun(b, repoUrl){                 //run docker commands 
   
   b.ds.start({
           Image: 'meneal/buildbox'
@@ -172,7 +195,7 @@ function dockerRun(b){                 //run docker commands
           return b.ds.run('apt-get update');
       }).then(function () {
           console.log('---> clone repo\n');
-          return b.ds.run('git clone https://github.com/Wildtrack/maze.git');
+          return b.ds.run('git clone ' + repoUrl);
       }).then(function () {
           console.log('---> cd to maze');
           return b.ds.run('cd maze');
@@ -202,7 +225,7 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           b.log.unpipe(b.firstTestStream);
           b.firstTestStream.end();
-      }).then(function (){                             //since mounting is not working this won't work
+      }).then(function (){                            
           console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');  
           return b.ds.run('wget https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');
       }).then(function (){
@@ -215,7 +238,7 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           b.log.unpipe(b.secondTestStream);
           b.secondTestStream.end();
-       }).then(function (){                             //since mounting is not working this won't work
+       }).then(function (){                             
           console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js');  
           return b.ds.run('wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js')
       }).then(function (){
