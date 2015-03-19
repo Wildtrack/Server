@@ -7,6 +7,20 @@ var exec = require('child_process').exec,
   fs = require('fs'),
   url = require('url');
 
+var redis = require ("redis"),
+  redisHost = 'pub-redis-11864.us-east-1-3.2.ec2.garantiadata.com',
+  redisPort = 11864,
+  redisOptions = {
+    auth_pass : process.argv[2]             //enter redis password as second argument
+  }                                         //sudo node server.js ________
+  
+redisClient = redis.createClient(redisPort, redisHost, redisOptions);
+
+redisClient.on("error", function(err){      //track redis errors
+  console.log("Error" + err);
+});
+
+
 var strem = require('stream');
 
 var PassThrough = strem.PassThrough ||
@@ -23,25 +37,38 @@ var count = 0;
 
 function buildTracker(date, projectName) {        //object aggregates docker object, streams, and writable folder/files
 
-  projectName = projectName.replace("/", "_");
+  this.projectName = projectName.replace("/", "_");
 
-  this.dir = './history/' + projectName;
+  //this.dir = './history/' + projectName;
 
-  fs.mkdirSync(this.dir);
+  //fs.mkdirSync(this.dir);
 
-  this.dir =  this.dir + '/' + date.toISOString();
+  //this.dir =  this.dir + '/' + date.toISOString();
 
-  fs.mkdirSync(this.dir);
+  this.buildTime = date.toISOString();
+
+  //fs.mkdirSync(this.dir);
 
   this.ds = new Docker();
   this.log = new PassThrough();
 
+  this.buildPass = new PassThrough();
+  this.firstTestPass = new PassThrough();
+  this.secondTestPass = new PassThrough();
+  this.commentCheckPass = new PassThrough();
+
   this.log.pipe(process.stdout);
 
-  this.buildStream = fs.createWriteStream("./" + this.dir + '/build.txt');
-  this.firstTestStream = fs.createWriteStream("./" + this.dir + '/firstTest.txt');
-  this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');
-  this.commentCheckStream = fs.createWriteStream("./" + this.dir + '/commentCheck.txt');
+  // this.buildStream = fs.createWriteStream("./" + this.dir + '/build.txt');
+  // this.firstTestStream = fs.createWriteStream("./" + this.dir + '/firstTest.txt');
+  // this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');
+  // this.commentCheckStream = fs.createWriteStream("./" + this.dir + '/commentCheck.txt');
+
+  this.buildStream = '';
+  this.firstTestStream = '';
+  this.secondTestStream = '';
+  this.commentCheckStream = '';
+  this.rejectStatus = '';
 }
 
 server = http.createServer(function (req, res) {		//creates http server 
@@ -57,7 +84,7 @@ server = http.createServer(function (req, res) {		//creates http server
       
       if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
           
-          createBuildList(undefined); 
+          createBuildList(undefined, handleLibs('./www/js/site.js', res)); 
 
           console.log(req.method)   
 
@@ -86,7 +113,7 @@ server = http.createServer(function (req, res) {		//creates http server
           string = string.concat(" to view your build status and result.");
 
           res.end(string);                        //reponse 
-
+        
       }else{                                                //if it's not a github webhook output build history 
           if(req.headers.referer != undefined){
           
@@ -99,11 +126,36 @@ server = http.createServer(function (req, res) {		//creates http server
 
             buildPick = reqURL.pathname.substring(1, reqURL.pathname.length);
 
-            createBuildList(parseInt(buildPick, 10));
+            createBuildList(parseInt(buildPick, 10), function(){
+            var fsPath = './www/index.html';
+
+            fs.readFile(fsPath, function(err, data){          //so instead just send the hwole file
+            if(err){
+                 res.writeHead(404,{"Content-type":"text/plain"});
+                 res.end("Sorry the page was not found");
+             }else{
+                 res.writeHead(202,{"Content-type":"text/html"});
+                 res.end(data);
+             }
+            });
+          });
           }
          }else {                                              //builds on any request that is not a request for previous build history
+          console.log("ELSE BUILDLIST")
 
-          createBuildList(undefined);                       
+          createBuildList(undefined, function(){
+            var fsPath = './www/index.html';
+
+            fs.readFile(fsPath, function(err, data){          //so instead just send the hwole file
+            if(err){
+                 res.writeHead(404,{"Content-type":"text/plain"});
+                 res.end("Sorry the page was not found");
+             }else{
+                 res.writeHead(202,{"Content-type":"text/html"});
+                 res.end(data);
+             }
+            });
+          });                       
 
          }
       }
@@ -151,15 +203,13 @@ function handleLibs(file, res){             //finds lib and returns
             if (err) console.log(err);
             else {
                 //console.log('jquery.min.js');
-                res.setHeader("Content-Length", data.length);
+                //res.setHeader("Content-Length", data.length);
                 //res.setHeader("Content-Type", 'text/javascript');
                 res.statusCode = 200;
                 res.end(data);
             }
   });
 }
-
-
 
 server.listen(3000);				//listens to this port on guest VM
 
@@ -204,14 +254,23 @@ function dockerRun(b, repoUrl){                 //run docker commands
           return b.ds.run('npm config set spin=false');
       }).then(function () {
           console.log('---> run npm install');
-          b.log.pipe(b.buildStream);
+
+          //b.log.pipe(b.buildStream);
+
+          b.log.pipe(b.buildPass);
+
+          b.buildPass.on('data', function(chunk){
+            //assert.equal(typeof chunk, 'string');
+            b.buildStream = b.buildStream + chunk;
+          })
+
           return b.ds.run('npm install');
       // }).then(function () {                            //grunt build ommited for now
       //     console.log('---> run grunt');
       //     return b.ds.run('grunt');
       }).then(function (){
-          b.log.unpipe(b.buildStream);
-          b.buildStream.end();
+          b.log.unpipe(b.buildPass);
+          b.buildPass.end();
       }).then(function (){
           console.log('--->npm install esprima');
           return b.ds.run('npm install esprima');
@@ -220,11 +279,19 @@ function dockerRun(b, repoUrl){                 //run docker commands
           return b.ds.run('npm install underscore');
       }).then(function (){
           console.log('--->npm test');
-          b.log.pipe(b.firstTestStream);
+          // b.log.pipe(b.firstTestStream);
+
+          b.log.pipe(b.firstTestPass);
+
+          b.firstTestPass.on('data', function(chunk){
+            //assert.equal(typeof chunk, 'string');
+            b.firstTestStream = b.firstTestStream + chunk;
+          })
+
           return b.ds.run('npm test');
       }).then(function (){
-          b.log.unpipe(b.firstTestStream);
-          b.firstTestStream.end();
+          b.log.unpipe(b.firstTestPass);
+          b.firstTestPass.end();
       }).then(function (){                            
           console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');  
           return b.ds.run('wget https://raw.githubusercontent.com/Wildtrack/Server/Test/data/main.js');
@@ -233,25 +300,44 @@ function dockerRun(b, repoUrl){                 //run docker commands
           return b.ds.run('node main.js backtrack.js');
       }).then(function (){
           console.log('----> npm test');
-          b.log.pipe(b.secondTestStream);
+          //b.log.pipe(b.secondTestStream);
+
+          b.log.pipe(b.secondTestPass)
+
+          b.secondTestPass.on('data', function(chunk){
+            //assert.equal(typeof chunk, 'string');
+            b.secondTestStream = b.secondTestStream + chunk;
+          })
+
           return b.ds.run('npm test');
       }).then(function (){
-          b.log.unpipe(b.secondTestStream);
-          b.secondTestStream.end();
+          b.log.unpipe(b.secondTestPass);
+          b.secondTestPass.end();
        }).then(function (){                             
           console.log('---->  wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js');  
           return b.ds.run('wget  https://raw.githubusercontent.com/Wildtrack/Server/Test/data/commentCheck.js')
       }).then(function (){
           console.log('node commentCheck.js backtrack.js main.js maze.js mazeMenu.js mazeModel.js mazeRender.js trailModel.js');
-          b.log.pipe(b.commentCheckStream);
+          //b.log.pipe(b.commentCheckStream);
+          
+          b.log.pipe(b.commentCheckPass);
+
+          b.commentCheckPass.on('data', function(chunk){
+            //assert.equal(typeof chunk, 'string');
+            b.commentCheckStream = b.commentCheckStream + chunk;
+          })
+
           return b.ds.run('node commentCheck.js backtrack.js main.js maze.js mazeMenu.js mazeModel.js mazeRender.js trailModel.js');
       }).then(function (){
-          b.log.unpipe(b.commentCheckTestStream);
-          b.commentCheckStream.end();
+          b.log.unpipe(b.commentCheckPass);
+          b.commentCheckPass.end();
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
-      }).then(function (code) {
+      }).then(function (){
+          console.log("sending to redis")
+          redisSend(b);
+      }).then(function (code){
           console.log('Run done with exit code: ' + code);
           return b.ds.stop();
       }).then(function () {
@@ -264,47 +350,83 @@ function dockerRun(b, repoUrl){                 //run docker commands
 
 }
 
-function createBuildList(build){
+function redisSend(b){
 
-  var files = fs.readdirSync('./history')
+  redisClient.hmset( b.projectName, b.buildTime, JSON.stringify({
+    build: b.buildStream,
+    firstTest: b.firstTestStream,
+    secondTest: b.secondTestStream,
+    commentCheck: b.commentCheckStream,
+    reject: b.rejectStatus
+  }))
 
-  var str = '';
+}
 
-  for(var i = 1; i < files.length; i++){
+function createBuildList(build, callback){
 
-    str = str + '\n $(".placeholder").append(' + "'<li><a href=" + '"' + i + '">' + files[i] + "</a></li>');";
-  }
+  //var files = fs.readdirSync('./history')
 
-  console.log(str);
+  var name = 'Wildtrack_maze';  //will implement multiple project in next update
 
-  if(build != undefined  && fs.existsSync('./history/' + files[build] + '/reject.txt')){
-     var dirPath = './history/' + files[build];
+  redisClient.hgetall(name, function(err, files) {
+    //console.log(files);
+    console.log("Grabbed object from redis")
 
-     data = fs.readFileSync(dirPath + '/build.txt')                                  //probably use Sync instead
+    var str = '';
 
-     str = str + textToHtml(data, ".buildHERE");
+    var i = 0;
+    for(key in files){
 
-     data = fs.readFileSync(dirPath + '/firstTest.txt')                                  //probably use Sync instead
+      str = str + '\n $(".placeholder").append(' + "'<li><a href=" + '"' + i + '">' + key + "</a></li>');";
+      i++;
+    }
 
-     str = str + textToHtml(data, ".testHERE");
+    console.log(str);
 
-     data = fs.readFileSync(dirPath + '/secondTest.txt')                                  //probably use Sync instead
+    if(build != undefined){
+      buildObject = JSON.parse(files[key]);
+    // } 
 
-     str = str + textToHtml(data, ".secondtestHERE");
+    // if(build != undefined  && buildObject.hasOwnProperty('')){
+      //var dirPath = './history/' + files[build];
 
-     data = fs.readFileSync(dirPath + '/commentCheck.txt') ;                                 //probably use Sync instead
+      data = buildObject.build;                                //probably use Sync instead
 
-     str = str + textToHtml(data, ".commentcheckHERE");
+      str = str + textToHtml(data, ".buildHERE");
 
-     data = fs.readFileSync(dirPath + '/reject.txt');
+      data = buildObject.firstTest;                                  //probably use Sync instead
 
-     str = str + textToHtml(data, ".rejectHERE");
+      str = str + textToHtml(data, ".testHERE");
 
-     fs.writeFileSync('./www/js/site.js', str);
+      data = buildObject.secondTest;                                  //probably use Sync instead
 
-  }else{
+      str = str + textToHtml(data, ".secondtestHERE");
+
+      data = buildObject.commentCheck ;                                 //probably use Sync instead
+
+      str = str + textToHtml(data, ".commentcheckHERE");
+
+      data = buildObject.reject;
+
+      str = str + textToHtml(data, ".rejectHERE");
+
       fs.writeFileSync('./www/js/site.js', str);
-  }         //create build history list for webapp
+
+        callback;
+
+   
+
+    }else{
+      fs.writeFileSync('./www/js/site.js', str);
+
+        callback;
+
+      
+    }         //create build history list for webapp
+
+  });
+
+  
 }
 
 function textToHtml(data, tag){
@@ -334,7 +456,9 @@ function textToHtml(data, tag){
 
 function rejectionCheck(b){     //checks rejection gate for build
 
-  data = fs.readFileSync( b.dir  + '/secondTest.txt').toString();
+  //data = fs.readFileSync( b.dir  + '/secondTest.txt').toString();
+
+  data = b.secondTestStream;
 
   data = data.replace(/[\r]+/g, '');
   data = data.replace(/[\n]+/g, '');
@@ -346,7 +470,9 @@ function rejectionCheck(b){     //checks rejection gate for build
 
   percent = parseFloat(coverage, 10);
 
-  data = fs.readFileSync( b.dir  + '/commentCheck.txt').toString();
+  //data = fs.readFileSync( b.dir  + '/commentCheck.txt').toString();
+
+  data = b.commentCheckStream;
 
   data = data.replace(/[\r]+/g, '');
   data = data.replace(/[\n]+/g, '');
@@ -383,10 +509,12 @@ function rejectionCheck(b){     //checks rejection gate for build
 
   }else {str = "Accepted"}
 
-  fs.writeFileSync(b.dir + '/reject.txt', str);               
+  //fs.writeFileSync(b.dir + '/reject.txt', str);  
+
+  b.rejectStatus = str;             
 }
 
-createBuildList(undefined);
+//createBuildList(undefined);
 
  
 // Used by exec to print the result of executing a subprocess.
