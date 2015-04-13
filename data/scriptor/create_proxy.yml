@@ -1,0 +1,72 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+      # 512MB size
+    - droplet_size: 512mb
+      # Ubuntu 14.04 x64
+    - droplet_image: 11388420
+      # nyc2
+    - droplet_region: nyc3
+      # my ssh key
+    - droplet_ssh_keys: 761015
+  tasks:
+    - name: Create cerberus
+      digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=cerberus
+        unique_name=yes
+      register: do
+    - name: Add new host to our inventory.
+      add_host:
+        name: "{{ do.droplet.ip_address }}"
+        groups: proxy
+      when: do.droplet is defined
+    - name: Wait for SSH to come up
+      local_action: 
+        module: wait_for 
+          host={{ do.droplet.ip_address }}
+          port=22
+          delay=30
+          timeout=320
+          state=started
+          connect_timeout=1
+          search_regex=OpenSSH
+
+- hosts: proxy
+  sudo: yes
+  tasks:
+    - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
+    - copy: src=/home/meneal/Documents/nodeDO/proxydns.sh dest=~/proxydns.sh
+    - command: chmod +x proxydns.sh
+    - shell: . /etc/environment && ~/proxydns.sh
+      sudo: no
+    - name: Install git
+      apt: pkg=git state=installed update_cache=true
+    - name: clone repo
+      command: git clone https://github.com/Wildtrack/HW3.git
+      register: result
+      ignore_errors: True
+    - name: repo exists
+      command: git pull
+      args:
+        chdir: HW3/
+      when: result|failed
+    - name: install node modules
+      command: npm install 
+      args:
+        chdir: HW3/
+    - name: Install Forever
+      npm: name=forever global=yes state=latest
+    - name: Check list of running nodejs apps
+      command: forever list
+      register: forever_list
+      changed_when: false
+    - name: Start maze server
+      command: forever start ./HW3/proxy.js
+      when: "forever_list.stdout.find('proxy.js') == -1"

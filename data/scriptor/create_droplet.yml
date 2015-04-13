@@ -1,0 +1,25 @@
+---
+- name: Digital Ocean Example
+  hosts: localhost
+  connection: local
+  vars:
+      # 512MB size
+    - droplet_size: 512mb
+      # Ubuntu 14.04 x64
+    - droplet_image: 9801950
+      # nyc2
+    - droplet_region: nyc3
+      # my ssh key
+    - droplet_ssh_keys: 761015
+  tasks:
+    - name: Create New Droplet
+      digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=droplet-example2
+        unique_name=yes
+      register: do_droplet

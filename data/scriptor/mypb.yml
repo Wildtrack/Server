@@ -1,0 +1,30 @@
+---
+- hosts: thanatos kronos
+  sudo: yes
+  tasks:
+    - name: Install git
+      apt: pkg=git state=installed update_cache=true
+    - name: install g++
+      apt: pkg=g++ state=installed
+    - name: clone repo
+      command: git clone https://github.com/Wildtrack/maze.git
+      register: result
+      ignore_errors: True
+    - name: repo exists
+      command: git pull
+      args:
+        chdir: maze/
+      when: result|failed
+    - name: install node modules
+      command: npm install 
+      args:
+        chdir: maze/
+    - name: Install Forever
+      npm: name=forever global=yes state=latest
+    - name: Check list of running nodejs apps
+      command: forever list
+      register: forever_list
+      changed_when: false
+    - name: Start maze server
+      command: forever start ./maze/server.js
+      when: "forever_list.stdout.find('maze/server.js') == -1"

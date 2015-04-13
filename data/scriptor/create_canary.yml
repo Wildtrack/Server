@@ -1,0 +1,97 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+      # 512MB size
+    - droplet_size: 512mb
+      # Ubuntu 14.04 x64
+    - droplet_image: 11388420
+      # nyc2
+    - droplet_region: nyc3
+      # my ssh key
+    - droplet_ssh_keys: 761015
+  tasks:
+  # - name: Destroy old Kronos
+  #   digital_ocean: >
+  #       state=absent
+  #       command=droplet
+  #       size_id={{ droplet_size }}
+  #       region_id={{ droplet_region }}
+  #       image_id={{ droplet_image }}
+  #       ssh_key_ids={{ droplet_ssh_keys }}
+  #       name=kronos
+  #       unique_name=yes
+  #   register: do1
+  # - name: Wait for kronos to die
+  #   local_action: 
+  #     module: wait_for 
+  #       host=kronos.lodr.me
+  #       delay=0
+  #       timeout=320
+  #       state=absent
+  #   when: do1|changed
+  - name: Create krnonos
+    digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=kronos
+        unique_name=yes
+    register: do
+  - name: Add new host to our inventory.
+    add_host:
+      name: "{{ do.droplet.ip_address }}"
+      groups: canary
+    when: do.droplet is defined
+  - name: Wait for SSH to come up
+    local_action: 
+      module: wait_for 
+        host={{ do.droplet.ip_address }}
+        port=22
+        delay=1
+        timeout=400
+        state=started
+        connect_timeout=1
+        search_regex=OpenSSH
+- hosts: canary
+  tasks:
+  - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
+  - copy: src=/home/meneal/Documents/nodeDO/kronosdns.sh dest=~/kronosdns.sh
+  - command: chmod +x kronosdns.sh
+  - shell: . /etc/environment && ~/kronosdns.sh
+    sudo: no
+  - name: get nrpe and install
+    apt: pkg=nagios-plugins update_cache=true
+    apt: pkg=nagios-nrpe-server
+  - copy: src=/home/meneal/Documents/nodeDO/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
+  - name: restart nrpe
+    command: service nagios-nrpe-server restart
+  - name: Install git
+    apt: pkg=git state=installed update_cache=true
+  - name: install g++
+    apt: pkg=g++ state=installed
+  - name: clone repo
+    command: git clone https://github.com/Wildtrack/maze.git
+    register: result
+    ignore_errors: True
+  - name: repo exists
+    command: git pull
+    args:
+      chdir: maze/
+    when: result|failed
+  - name: install node modules
+    command: npm install 
+    args:
+      chdir: maze/
+  - name: Install Forever
+    npm: name=forever global=yes state=latest
+  - name: Check list of running nodejs apps
+    command: forever list
+    register: forever_list
+    changed_when: false
+  - name: Start maze server
+    command: forever start ./maze/server.js
+    when: "forever_list.stdout.find('maze/server.js') == -1"

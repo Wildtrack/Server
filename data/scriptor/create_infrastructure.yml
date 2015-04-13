@@ -1,0 +1,121 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+      # 512MB size
+    - droplet_size: 512mb
+      # Ubuntu 14.04 x64
+    - droplet_image: 11388420
+      # nyc2
+    - droplet_region: nyc3
+      # my ssh key
+    - droplet_ssh_keys: 761015
+  tasks:
+    - name: Create cerberus
+      digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=cerberus
+        unique_name=yes
+      register: do
+    - name: Add new host to our inventory.
+      add_host:
+        name: "{{ do.droplet.ip_address }}"
+        groups: proxy
+      when: do.droplet is defined
+
+    - name: Create kronos
+      digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=kronos
+        unique_name=yes
+      register: do1
+    - name: Add new host to our inventory.
+      add_host:
+        name: "{{ do.droplet.ip_address }}"
+        groups: node
+      when: do1.droplet is defined
+
+    - name: Create thanatos
+      digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=thanatos
+        unique_name=yes
+      register: do2
+    - name: Add new host to our inventory.
+      add_host:
+        name: "{{ do2.droplet.ip_address }}"
+        groups: node
+      when: do2.droplet is defined
+
+- hosts: node
+  sudo: yes
+  tasks:
+    - name: Install git
+      apt: pkg=git state=installed update_cache=true
+    - name: install g++
+      apt: pkg=g++ state=installed
+    - name: clone repo
+      command: git clone https://github.com/Wildtrack/maze.git
+      register: result
+      ignore_errors: True
+    - name: repo exists
+      command: git pull
+      args:
+        chdir: maze/
+      when: result|failed
+    - name: install node modules
+      command: npm install 
+      args:
+        chdir: maze/
+    - name: Install Forever
+      npm: name=forever global=yes state=latest
+    - name: Check list of running nodejs apps
+      command: forever list
+      register: forever_list
+      changed_when: false
+    - name: Start maze server
+      command: forever start ./maze/server.js
+      when: "forever_list.stdout.find('maze/server.js') == -1"
+
+- hosts: proxy
+  sudo: yes
+  tasks:
+    - name: Install git
+      apt: pkg=git state=installed update_cache=true
+    - name: clone repo
+      command: git clone https://github.com/Wildtrack/HW3.git
+      register: result
+      ignore_errors: True
+    - name: repo exists
+      command: git pull
+      args:
+        chdir: HW3/
+      when: result|failed
+    - name: install node modules
+      command: npm install 
+      args:
+        chdir: HW3/
+    - name: Install Forever
+      npm: name=forever global=yes state=latest
+    - name: Check list of running nodejs apps
+      command: forever list
+      register: forever_list
+      changed_when: false
+    - name: Start maze server
+      command: forever start ./HW3/proxy.js
+      when: "forever_list.stdout.find('proxy.js') == -1"
