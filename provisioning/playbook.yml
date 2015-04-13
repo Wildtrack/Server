@@ -22,6 +22,10 @@
       apt: name=python-pip
     - name: install dopy
       command: pip install dopy
+    - name: install ruby gems
+      apt: ruby-full
+    - name: install tugboat
+      command: gem install tugboat
     #- name: Server Going Up
       #command: node server.js >> somelog.txt chdir=data/
 

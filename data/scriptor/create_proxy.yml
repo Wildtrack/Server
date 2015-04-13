@@ -3,13 +3,13 @@
   connection: local
   vars:
       # 512MB size
-    - droplet_size: 512mb
+    - droplet_size: 66
       # Ubuntu 14.04 x64
     - droplet_image: 11388420
       # nyc2
-    - droplet_region: nyc3
+    - droplet_region: 8
       # my ssh key
-    - droplet_ssh_keys: 761015
+    - droplet_ssh_keys: 759798
   tasks:
     - name: Create cerberus
       digital_ocean: >
@@ -42,7 +42,7 @@
   sudo: yes
   tasks:
     - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
-    - copy: src=/home/meneal/Documents/nodeDO/proxydns.sh dest=~/proxydns.sh
+    - copy: src=/home/vagrant/data/scriptor/proxydns.sh dest=~/proxydns.sh
     - command: chmod +x proxydns.sh
     - shell: . /etc/environment && ~/proxydns.sh
       sudo: no

@@ -3,13 +3,13 @@
   connection: local
   vars:
       # 512MB size
-    - droplet_size: 512mb
+    - droplet_size: 66
       # Ubuntu 14.04 x64
     - droplet_image: 11388420
       # nyc2
-    - droplet_region: nyc3
+    - droplet_region: 8
       # my ssh key
-    - droplet_ssh_keys: 761015
+    - droplet_ssh_keys: 759798
   tasks:
   # - name: Destroy old Kronos
   #   digital_ocean: >
@@ -59,14 +59,14 @@
 - hosts: canary
   tasks:
   - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
-  - copy: src=/home/meneal/Documents/nodeDO/kronosdns.sh dest=~/kronosdns.sh
+  - copy: src=/home/vagrant/data/scriptor/kronosdns.sh dest=~/kronosdns.sh
   - command: chmod +x kronosdns.sh
   - shell: . /etc/environment && ~/kronosdns.sh
     sudo: no
   - name: get nrpe and install
     apt: pkg=nagios-plugins update_cache=true
     apt: pkg=nagios-nrpe-server
-  - copy: src=/home/meneal/Documents/nodeDO/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
+  - copy: src=/home/vagrant/data/scriptor/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
   - name: restart nrpe
     command: service nagios-nrpe-server restart
   - name: Install git

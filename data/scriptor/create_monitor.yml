@@ -3,13 +3,13 @@
   connection: local
   vars:
       # 512MB size
-    - droplet_size: 512mb
+    - droplet_size: 66
       # Ubuntu 14.04 x64
     - droplet_image: 11388420
       # nyc2
-    - droplet_region: nyc3
+    - droplet_region: 8
       # my ssh key
-    - droplet_ssh_keys: 761015
+    - droplet_ssh_keys: 759798
   tasks:
     - name: Create odin
       digital_ocean: >
@@ -40,7 +40,7 @@
 - hosts: monitor
   tasks:
     - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
-    - copy: src=/home/meneal/Documents/nodeDO/eyedns.sh dest=~/eyedns.sh
+    - copy: src=/home/vagrant/data/scriptor/eyedns.sh dest=~/eyedns.sh
     - command: chmod +x eyedns.sh
     - shell: . /etc/environment && ~/eyedns.sh
       sudo: no
@@ -82,7 +82,7 @@
         - libssl-dev 
         - apache2-utils
       #copy the swap script and run it
-    - copy: src=/home/meneal/Documents/nodeDO/mk_swap.sh dest=~/mk_swap.sh
+    - copy: src=/home/vagrant/data/scriptor/mk_swap.sh dest=~/mk_swap.sh
     - script: mk_swap.sh
     - name: Create nagios user
       command: "{{ item }}"
@@ -170,8 +170,8 @@
       command: "{{ item }}"
       with_items:
         - sudo mkdir /usr/local/nagios/etc/servers
-    - copy: src=/home/meneal/Documents/nodeDO/nagios.cfg dest=/usr/local/nagios/etc/nagios.cfg
-    - copy: src=/home/meneal/Documents/nodeDO/contacts.cfg dest=/usr/local/nagios/etc/objects/contacts.cfg
+    - copy: src=/home/vagrant/data/scriptor/nagios.cfg dest=/usr/local/nagios/etc/nagios.cfg
+    - copy: src=/home/vagrant/data/scriptor/contacts.cfg dest=/usr/local/nagios/etc/objects/contacts.cfg
     - name: configure apache
       command: "{{ item }}"
       with_items:
@@ -182,9 +182,9 @@
       - service nagios start
       - service apache2 restart
       - ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
-    - copy: src=/home/meneal/Documents/nodeDO/proxy.cfg dest=/usr/local/nagios/etc/servers/proxy.cfg
-    - copy: src=/home/meneal/Documents/nodeDO/thanatos.cfg dest=/usr/local/nagios/etc/servers/thanatos.cfg
-    - copy: src=/home/meneal/Documents/nodeDO/kronos.cfg dest=/usr/local/nagios/etc/servers/kronos.cfg
+    - copy: src=/home/vagrant/data/scriptor/proxy.cfg dest=/usr/local/nagios/etc/servers/proxy.cfg
+    - copy: src=/home/vagrant/data/scriptor/thanatos.cfg dest=/usr/local/nagios/etc/servers/thanatos.cfg
+    - copy: src=/home/vagrant/data/scriptor/kronos.cfg dest=/usr/local/nagios/etc/servers/kronos.cfg
     - name: Restart nagios with config files intact
       command: service nagios reload
 
