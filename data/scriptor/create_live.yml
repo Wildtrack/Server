@@ -3,13 +3,13 @@
   connection: local
   vars:
       # 512MB size
-    - droplet_size: 512mb
+    - droplet_size: 66
       # Ubuntu 14.04 x64
     - droplet_image: 11388420
       # nyc2
-    - droplet_region: nyc3
+    - droplet_region: 8
       # my ssh key
-    - droplet_ssh_keys: 761015
+    - droplet_ssh_keys: 759798
   tasks:
   # - name: Destroy old thanatos
   #   digital_ocean: >
