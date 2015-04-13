@@ -11,25 +11,25 @@
       # my ssh key
     - droplet_ssh_keys: 761015
   tasks:
-  - name: Destroy old thanatos
-    digital_ocean: >
-        state=absent
-        command=droplet
-        size_id={{ droplet_size }}
-        region_id={{ droplet_region }}
-        image_id={{ droplet_image }}
-        ssh_key_ids={{ droplet_ssh_keys }}
-        name=thanatos
-        unique_name=yes
-    register: dold
-  - name: Wait for thanatos to die
-    local_action: 
-      module: wait_for 
-        host=thanatos.lodr.me
-        delay=0
-        timeout=320
-        state=absent
-    when: dold|changed
+  # - name: Destroy old thanatos
+  #   digital_ocean: >
+  #       state=absent
+  #       command=droplet
+  #       size_id={{ droplet_size }}
+  #       region_id={{ droplet_region }}
+  #       image_id={{ droplet_image }}
+  #       ssh_key_ids={{ droplet_ssh_keys }}
+  #       name=thanatos
+  #       unique_name=yes
+  #   register: dold
+  # - name: Wait for thanatos to die
+  #   local_action: 
+  #     module: wait_for 
+  #       host=thanatos.lodr.me
+  #       delay=0
+  #       timeout=320
+  #       state=absent
+  #   when: dold|changed
   - name: Create thanatos
     digital_ocean: >
         state=present
