@@ -11,25 +11,23 @@
       # my ssh key
     - droplet_ssh_keys: 759798
   tasks:
-  # - name: Destroy old Kronos
-  #   digital_ocean: >
-  #       state=absent
-  #       command=droplet
-  #       size_id={{ droplet_size }}
-  #       region_id={{ droplet_region }}
-  #       image_id={{ droplet_image }}
-  #       ssh_key_ids={{ droplet_ssh_keys }}
-  #       name=kronos
-  #       unique_name=yes
-  #   register: do1
-  # - name: Wait for kronos to die
-  #   local_action: 
-  #     module: wait_for 
-  #       host=kronos.lodr.me
-  #       delay=0
-  #       timeout=320
-  #       state=absent
-  #   when: do1|changed
+  - name: Destroy old Kronos
+    digital_ocean: >
+        state=absent
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=kronos
+        unique_name=yes
+    register: do1
+  - name: Wait for kronos to die
+    local_action: 
+      module: wait_for 
+        delay=0
+        timeout=30
+    when: do1|changed
   - name: Create krnonos
     digital_ocean: >
         state=present
@@ -51,7 +49,7 @@
       module: wait_for 
         host={{ do.droplet.ip_address }}
         port=22
-        delay=1
+        delay=30
         timeout=400
         state=started
         connect_timeout=1

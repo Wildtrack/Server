@@ -11,25 +11,23 @@
       # my ssh key
     - droplet_ssh_keys: 759798
   tasks:
-  # - name: Destroy old thanatos
-  #   digital_ocean: >
-  #       state=absent
-  #       command=droplet
-  #       size_id={{ droplet_size }}
-  #       region_id={{ droplet_region }}
-  #       image_id={{ droplet_image }}
-  #       ssh_key_ids={{ droplet_ssh_keys }}
-  #       name=thanatos
-  #       unique_name=yes
-  #   register: dold
-  # - name: Wait for thanatos to die
-  #   local_action: 
-  #     module: wait_for 
-  #       host=thanatos.lodr.me
-  #       delay=0
-  #       timeout=320
-  #       state=absent
-  #   when: dold|changed
+  - name: Destroy old thanatos
+    digital_ocean: >
+        state=absent
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=thanatos
+        unique_name=yes
+    register: dold
+  - name: Wait for thanatos to die
+    local_action: 
+      module: wait_for 
+        delay=0
+        timeout=30
+    when: dold|changed
   - name: Create thanatos
     digital_ocean: >
         state=present
@@ -60,14 +58,14 @@
   sudo: yes
   tasks:
   - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
-  - copy: src=/home/meneal/Documents/nodeDO/thanatosdns.sh dest=~/thanatosdns.sh
+  - copy: src=/home/vagrant/data/scriptor/thanatosdns.sh dest=~/thanatosdns.sh
   - command: chmod +x thanatosdns.sh
   - shell: . /etc/environment && ~/thanatosdns.sh
     sudo: no
   - name: get nrpe and install
     apt: pkg=nagios-plugins update_cache=true
     apt: pkg=nagios-nrpe-server
-  - copy: src=/home/meneal/Documents/nodeDO/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
+  - copy: src=/home/vagrant/data/scriptor/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
   - name: restart nrpe
     command: service nagios-nrpe-server restart
   - name: Install git

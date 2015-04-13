@@ -37,7 +37,6 @@
           state=started
           connect_timeout=1
           search_regex=OpenSSH
-
 - hosts: proxy
   sudo: yes
   tasks:
@@ -49,24 +48,24 @@
     - name: Install git
       apt: pkg=git state=installed update_cache=true
     - name: clone repo
-      command: git clone https://github.com/Wildtrack/HW3.git
+      command: git clone https://github.com/Wildtrack/DeployProxy.git
       register: result
       ignore_errors: True
     - name: repo exists
       command: git pull
       args:
-        chdir: HW3/
+        chdir: DeployProxy/
       when: result|failed
     - name: install node modules
       command: npm install 
       args:
-        chdir: HW3/
+        chdir: DeployProxy/
     - name: Install Forever
       npm: name=forever global=yes state=latest
     - name: Check list of running nodejs apps
       command: forever list
       register: forever_list
       changed_when: false
-    - name: Start maze server
-      command: forever start ./HW3/proxy.js
+    - name: Start proxy server
+      command: forever start ./DeployProxy/proxy.js
       when: "forever_list.stdout.find('proxy.js') == -1"
