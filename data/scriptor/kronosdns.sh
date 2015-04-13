@@ -11,7 +11,7 @@ else
           -d tkn=$CLOUD_FLARE \
           -d email=meneal@gmail.com \
           -d z=lodr.me \
-          -d id=262508974\
+          -d id=262508974 \
           -d type=A \
           -d name=kronos \
           -d ttl=1 \
