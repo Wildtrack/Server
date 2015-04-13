@@ -23,7 +23,7 @@
     - name: install dopy
       command: pip install dopy
     - name: install ruby gems
-      apt: ruby-full
+      apt: name=ruby-full
     - name: install tugboat
       command: gem install tugboat
     #- name: Server Going Up
