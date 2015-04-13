@@ -9,7 +9,7 @@
     - name: run node install script
       script: npm.sh
     - name: install node
-      apt: name=nodejs update_cache=yes 
+      apt: name=nodejs
     - name: pull meneal/buildbox
       command: docker pull meneal/buildbox
     - name: install software properties common
@@ -17,7 +17,11 @@
     - name: add ansible repo
       apt_repository: repo='ppa:ansible/ansible' 
     - name: install ansible
-      apt: name=ansible update_cache=yes
+      apt: name=ansible 
+    - name: install pip
+      apt: name=python-pip
+    - name: install dopy
+      command: pip install dopy
     #- name: Server Going Up
       #command: node server.js >> somelog.txt chdir=data/
 
