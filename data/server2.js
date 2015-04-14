@@ -450,8 +450,8 @@ createBuildList(undefined);
 
 function sendToCanary(){
 
-  var playbook = new Ansible.Playbook().playbook('./scriptor/create_canary.yml');
-
+  var playbook = new Ansible.Playbook().playbook('./scriptor/create_canary');
+  playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
   var promise = playbook.exec();
@@ -471,8 +471,8 @@ function sendToCanary(){
 
 function sendToLive(){
 
-  var playbook = new Ansible.Playbook().playbook('./scriptor/create_live.yml');
-
+  var playbook = new Ansible.Playbook().playbook('./scriptor/create_live');
+  playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
   var promise = playbook.exec();
