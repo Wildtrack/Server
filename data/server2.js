@@ -5,7 +5,8 @@ var exec = require('child_process').exec,
   events = require('events'),
   emitter = new events.EventEmitter(),
   fs = require('fs'),
-  url = require('url');
+  url = require('url'),
+  var Ansible = require('node-ansible');
 
 var strem = require('stream');
 
@@ -449,21 +450,43 @@ createBuildList(undefined);
 
 function sendToCanary(){
 
-  exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
-    if(error) {
-        emitter.emit('error', error)
-    }
+  var playbook = new Ansible.Playbook().playbook('./scriptor/create_canary.yml');
+
+  playbook.inventory('./scriptor/hosts/digital_ocean.py')
+
+  var promise = playbook.exec();
+
+  promise.then(function(result) {
+  console.log(result.code);
+  console.log(result.output);
   });
+
+  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
+  //   if(error) {
+  //       emitter.emit('error', error)
+  //   }
+  // });
 
 }
 
 function sendToLive(){
 
-  exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
-    if(error) {
-        emitter.emit('error', error)
-    }
+  var playbook = new Ansible.Playbook().playbook('./scriptor/create_live.yml');
+
+  playbook.inventory('./scriptor/hosts/digital_ocean.py')
+
+  var promise = playbook.exec();
+
+  promise.then(function(result) {
+  console.log(result.code);
+  console.log(result.output);
   });
+
+  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
+  //   if(error) {
+  //       emitter.emit('error', error)
+  //   }
+  // });
 
 }
 
