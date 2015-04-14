@@ -4,7 +4,8 @@
   "description": "Build Server",
   "main": "server.js",
   "dependencies": {
-    "docker-exec": "^0.3.0"
+    "docker-exec": "^0.3.0",
+    "node-ansible": "^0.3.0"
   },
   "devDependencies": {
     "docker-exec": "^0.3.0"
