@@ -36,6 +36,8 @@ function buildTracker(date) {        //object aggregates docker object, streams,
   this.firstTestStream = fs.createWriteStream("./" + this.dir + '/firstTest.txt');
   this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');
   this.commentCheckStream = fs.createWriteStream("./" + this.dir + '/commentCheck.txt');
+
+  this.canary = false;
 }
 
 server = http.createServer(function (req, res) {		//creates http server 
@@ -51,13 +53,39 @@ server = http.createServer(function (req, res) {		//creates http server
       
       if(!!req.headers['x-github-delivery']){                       //if its a github web hook                  
           
-          createBuildList(undefined);                       
+          createBuildList(undefined); 
 
-          buildNode[count] = new buildTracker(d);
+          var body = ''
 
-          dockerRun(buildNode[count]);
+          req.on('data', function(data){
 
-          count++;
+            body += data;
+
+            if(body.length > 1e6) req.connection.destroy();
+
+          }); 
+
+          req.on('end', function(){
+
+            console.log(post.repository.url)
+
+            buildNode[count] = new buildTracker(d);
+
+            if(post.head_commit){
+
+              console.log(post.head_commit.message)
+
+              var message = post.head_commit.message;
+
+              if(message.indexOf('canary') != -1){
+                buildNode[count].canary = true;
+              }
+            }
+            dockerRun(buildNode[count]);
+
+            count++;
+
+          })                       
 
           var string = "Please visit http://".concat(req.headers.host);         //reply to github webhook with url to retreivable build status
           string = string.concat(" to view your build status and result.");
@@ -390,7 +418,7 @@ function rejectionCheck(b){     //checks rejection gate for build
 
   perFunc = perFuncTotal / count;
 
-  if(percent < 50  || perFunc < 3){ 
+  if(percent < 5 || perFunc < 1){     //set percent 5 and 3 for demonstrating automated deployment
       
       str = "Rejected";
 
@@ -402,12 +430,40 @@ function rejectionCheck(b){     //checks rejection gate for build
         str = str + "\nNumber of line comments per function less than 3";
       }
 
-  }else {str = "Accepted"}
+  }else {
+    
+    str = "Accepted"
+
+    if(b.canary){
+      sendToCanary();
+    }else {sendToLive();}
+
+  }
 
   fs.writeFileSync(b.dir + '/reject.txt', str);               
 }
 
 createBuildList(undefined);
+
+function sendToCanary(){
+
+  exec(util.format('ansible-playbook -i ./hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
+    if(error) {
+        emitter.emit('error', error)
+    }
+  });
+
+}
+
+function sendToLive(){
+
+  exec(util.format('ansible-playbook -i ./hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
+    if(error) {
+        emitter.emit('error', error)
+    }
+  });
+
+}
 
  
 // Used by exec to print the result of executing a subprocess.
