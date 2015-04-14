@@ -449,7 +449,7 @@ createBuildList(undefined);
 
 function sendToCanary(){
 
-  exec(util.format('ansible-playbook -i ./hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
+  exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
     if(error) {
         emitter.emit('error', error)
     }
@@ -459,7 +459,7 @@ function sendToCanary(){
 
 function sendToLive(){
 
-  exec(util.format('ansible-playbook -i ./hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
+  exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
     if(error) {
         emitter.emit('error', error)
     }
