@@ -67,6 +67,8 @@ server = http.createServer(function (req, res) {		//creates http server
 
           req.on('end', function(){
 
+            post = JSON.parse(body);
+
             console.log(post.repository.url)
 
             buildNode[count] = new buildTracker(d);
