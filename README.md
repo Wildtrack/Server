@@ -219,30 +219,30 @@ The list of running droplets can be found by running:
 
 This section will describe exactly what our structure is with this project.  In the image below and as discussed above you will notice that we have 4 droplets in our system.  
 
-![sysdiag]()
+![sysdiag](https://github.com/Wildtrack/Server/blob/Deploy/img/sysdiag.png)
 
 The droplets function as follows:
 
 ####Odin
 This droplet is also called eye, and is our monitoring node.  When set up it is accessible at eye.lodr.me/nagios.  An image of the main dash is below:
 
-![maindash]()
+![maindash](https://github.com/Wildtrack/Server/blob/Deploy/img/maindash.png)
 
 This droplet has a connection to all of the other droplets in the system and also monitors itself.  It is set up using [nagios](http://www.nagios.org/).  This is a fairly heavyweight tool that can keep track of a wide variety of information on nodes.  Currently we are logging just a small fraction of what we could but in the image below you can see how the setup looks with all of the nodes created and running:
 
-![allnodes]()
+![allnodes](https://github.com/Wildtrack/Server/blob/Deploy/img/allnodes.png)
 
 Going into thanatos, which will be described later, we have data on ping, latency, whether the host is up or not, when the state of the node last changed, and finally in another window whether ssh on the particular box is available or not.  This information is shown in the following two images:
 
 
-![thanatosmaindash]()
+![thanatosmaindash](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosadmindash.png)
 
-![thanatosdetail]()
+![thanatosdetail](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosdetail.png)
 
 
 There is also a large amount of information on the actual service state of the machine over time for both ssh and ping.  The image below shows a histogram of the state on the ssh service.  Obviously alot of the time this box has been down as the team didn't want to pay for it to be up all of the time, also the actual nagios monitoring box has been up and down serveral times so it has not been monitoring for long enough for this infomration to be very valuable.
 
-![thanatosssh]()
+![thanatosssh](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosssh.png)
 
 ####Cerberus
 
@@ -271,9 +271,9 @@ In normal operation all builds are deployed to thanatos according to an ansible 
 
 There are two images below.  The first is the maze game running on thanatos.lodr.me, and the second is the maze game running on lodr.me.  The second just shows traffic routed to thanatos.lodr.me.
 
-![livebuildthan]()
+![livebuildthan](https://github.com/Wildtrack/Server/blob/Deploy/img/livebuildthan.png)
 
-![livebuildlodr]()
+![livebuildlodr](https://github.com/Wildtrack/Server/blob/Deploy/img/livebuildlodr.png)
 
 
 Canary operation is switched on by making a commit to the monitored github repo with the message "canary". This assumes that a live build has already been pushed and thanatos is already running.  There are a few simple differences here: 
