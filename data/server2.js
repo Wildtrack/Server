@@ -457,11 +457,14 @@ function sendToCanary(){
   //playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
-  var promise = playbook.exec();
+  // var promise = playbook.exec();
 
-  promise.then(function(result) {
-    console.log(result.output);
-  });
+  // promise.then(function(result) {
+  //   console.log(result.output);
+  // });
+
+  deployTillSucceed(playbook)
+  
 
   if(canary === false){
     canary = true;
@@ -482,12 +485,19 @@ function sendToCanary(){
     });
   }
 
-  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
-  //   if(error) {
-  //       emitter.emit('error', error)
-  //   }
-  //   process.stdout.write(stdout);
-  // });
+}
+
+function deployTillSucceed(playbook){
+
+  var promise = playbook.exec();
+
+  promise.then(function(result) {
+    console.log(result.output)
+
+    if(result.output.indexOf('fatal') != -1){
+      deployTillSucceed(playbook)
+    }
+  });
 
 }
 
@@ -497,11 +507,13 @@ function sendToLive(){
   //playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
-  var promise = playbook.exec();
+  // var promise = playbook.exec();
 
-  promise.then(function(result) {
-    console.log(result.output);
-  });
+  // promise.then(function(result) {
+  //   console.log(result.output);
+  // });
+
+  deployTillSucceed(playbook)
 
   // if(canary === true){                         //I'm not sure you need this and would switch back to nocanary when not wanted
   //   var session = ping.createSession ();         //Commiting a Live deploy doesn't necessarily mean you want to turn canary off

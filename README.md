@@ -252,7 +252,9 @@ There is also a large amount of information on the actual service state of the m
 
 ####Cerberus
 
-This is our proxy box.  It is located at the root domain and can be accessed at either http://www.lodr.me or http://lodr.me.  This proxy routes all traffic to thanatos.lodr.me most of the time.  If this route is accessed: http://www.lodr.me/canary.  The proxy switches over into a canary mode.  This way individual IP addresses are routed to either thanatos.lodr.me, or kronos.lodr.me according to a set percentage of the time.  
+This is our proxy box. It is located at the root domain and can be accessed at either http://www.lodr.me or http://lodr.me.  This proxy routes all traffic to thanatos.lodr.me most of the time.  If this route is accessed: http://www.lodr.me/canary.  The proxy switches over into a canary mode.  This way individual IP addresses are routed to either thanatos.lodr.me, or kronos.lodr.me according to a set percentage of the time.
+
+The code for the proxy is located at [DeployProxy](https://github.com/Wildtrack/DeployProxy)   
 
 
 ####Thanatos
