@@ -5,8 +5,9 @@ var exec = require('child_process').exec,
   events = require('events'),
   emitter = new events.EventEmitter(),
   fs = require('fs'),
-  url = require('url'),
-  var Ansible = require('node-ansible');
+  url = require('url');
+
+var Ansible = require('node-ansible');
 
 var strem = require('stream');
 
@@ -449,43 +450,44 @@ function rejectionCheck(b){     //checks rejection gate for build
 createBuildList(undefined);
 
 function sendToCanary(){
-
+  console.log("Sending canary payload to digital ocean.  This will take awhile.");
+  
   var playbook = new Ansible.Playbook().playbook('./scriptor/create_canary');
-  playbook.verbose('v');
+  //playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
   var promise = playbook.exec();
 
   promise.then(function(result) {
-  console.log(result.code);
-  console.log(result.output);
+    console.log(result.output);
   });
 
   // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
   //   if(error) {
   //       emitter.emit('error', error)
   //   }
+  //   process.stdout.write(stdout);
   // });
 
 }
 
 function sendToLive(){
-
+  console.log("Sending live payload to digital ocean.  This will take awhile.");
   var playbook = new Ansible.Playbook().playbook('./scriptor/create_live');
-  playbook.verbose('v');
+  //playbook.verbose('v');
   playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
   var promise = playbook.exec();
 
   promise.then(function(result) {
-  console.log(result.code);
-  console.log(result.output);
+    console.log(result.output);
   });
 
-  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml'), function (error, stdout, stderr){
+  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml -vvvv'), function (error, stdout, stderr){
   //   if(error) {
-  //       emitter.emit('error', error)
+  //       emitter.emit('error', error)   
   //   }
+  //   process.stdout.write(stdout);
   // });
 
 }

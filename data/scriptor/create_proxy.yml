@@ -21,22 +21,24 @@
         ssh_key_ids={{ droplet_ssh_keys }}
         name=cerberus
         unique_name=yes
+        wait=yes
       register: do
     - name: Add new host to our inventory.
       add_host:
         name: "{{ do.droplet.ip_address }}"
         groups: proxy
       when: do.droplet is defined
-    - name: Wait for SSH to come up
-      local_action: 
-        module: wait_for 
-          host={{ do.droplet.ip_address }}
-          port=22
-          delay=30
-          timeout=320
-          state=started
-          connect_timeout=1
-          search_regex=OpenSSH
+      - name: Wait for SSH to come up
+        local_action: 
+          module: wait_for 
+            host={{ do.droplet.ip_address }}
+            port=22
+            delay=30
+            timeout=500
+            state=started
+            search_regex=OpenSSH
+        sudo: false
+      - pause: seconds=10
 - hosts: proxy
   sudo: yes
   tasks:

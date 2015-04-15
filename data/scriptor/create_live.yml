@@ -38,6 +38,7 @@
         ssh_key_ids={{ droplet_ssh_keys }}
         name=thanatos
         unique_name=yes
+        wait=yes
     register: do
   - name: Add new host to our inventory.
     add_host:
@@ -50,12 +51,12 @@
         host={{ do.droplet.ip_address }}
         port=22
         delay=30
-        timeout=400
+        timeout=500
         state=started
-        connect_timeout=1
         search_regex=OpenSSH
+    sudo: false
+  - pause: seconds=20
 - hosts: live
-  sudo: yes
   tasks:
   - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
   - copy: src=/home/vagrant/data/scriptor/thanatosdns.sh dest=~/thanatosdns.sh
