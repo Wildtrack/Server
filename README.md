@@ -235,7 +235,7 @@ This droplet has a connection to all of the other droplets in the system and als
 Going into thanatos, which will be described later, we have data on ping, latency, whether the host is up or not, when the state of the node last changed, and finally in another window whether ssh on the particular box is available or not.  This information is shown in the following two images:
 
 
-![thanatosmaindash](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosadmindash.png)
+![thanatosmaindash](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosmaindash.png)
 
 ![thanatosdetail](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosdetail.png)
 
@@ -283,15 +283,15 @@ Canary operation is switched on by making a commit to the monitored github repo 
 
 Now the canary is deployed and the live build is deployed and traffic is routed between the two as described in the section on Cerberus.  To attempt to show that the proxy is functioning we made a slight change to the normal deploy.  In the console each button in the maze game dash just prints out what the button does.  As shown below:
 
-![mazebuttons]()
+![mazebuttons](https://github.com/Wildtrack/Server/blob/Deploy/img/mazebuttons.png)
 
 When the change is made and the push is made using the canary message as shown in this image:
 
-![canarycommit]()
+![canarycommit](https://github.com/Wildtrack/Server/blob/Deploy/img/canarycommit.png)
 
 Going to lodr.me after the change the canary is in effect.  50% of the time we should get the canary, and visiting the site we do as shown in the image below:
 
-![canarybuttons]()
+![canarybuttons](https://github.com/Wildtrack/Server/blob/Deploy/img/canarybuttons.png)
 
 To turn off the canary feature simply push a new normal commit without the canary message.
 
