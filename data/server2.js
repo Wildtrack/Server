@@ -8,6 +8,8 @@ var exec = require('child_process').exec,
   url = require('url');
 
 var Ansible = require('node-ansible');
+var ping = require('net-ping');
+var canary = false;
 
 var strem = require('stream');
 
@@ -76,7 +78,6 @@ server = http.createServer(function (req, res) {		//creates http server
             buildNode[count] = new buildTracker(d);
 
             if(post.head_commit){
-
               console.log(post.head_commit.message)
 
               var message = post.head_commit.message;
@@ -462,6 +463,23 @@ function sendToCanary(){
     console.log(result.output);
   });
 
+  canary = true;
+  var session = ping.createSession ();
+
+  var options = {
+    host: 'www.lodr.me',
+    port: 80,
+    path: '/canary'
+  };
+
+  http.get(options, function(res) {
+    if (res.statusCode == 200) {
+      console.log("Flipped canary switch to true.");
+    }
+  }).on('error', function(e) {
+    console.log("Got error: " + e.message);
+  });
+
   // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
   //   if(error) {
   //       emitter.emit('error', error)
@@ -482,6 +500,24 @@ function sendToLive(){
   promise.then(function(result) {
     console.log(result.output);
   });
+
+  if(canary === true){
+    var session = ping.createSession ();
+
+    var options = {
+      host: 'www.lodr.me',
+      port: 80,
+      path: '/canary'
+    };
+
+    http.get(options, function(res) {
+      if (res.statusCode == 200) {
+        console.log("Flipped canary switch to false.");
+      }
+    }).on('error', function(e) {
+      console.log("Got error: " + e.message);
+    });
+  }
 
   // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml -vvvv'), function (error, stdout, stderr){
   //   if(error) {

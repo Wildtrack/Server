@@ -7,6 +7,10 @@ This repo contains a ton of digital ocean related scripts.  To use them you need
     export DO_API_TOKEN=xxxxxxxxxxxxxxxxxxxx
     export CLOUD_FLARE=xxxxxxxxxxxxxxxxxxxxx
 
+
+
+
+
 There are three scripts.  One for setting up a canary, one for a proxy and one for a live node.  They are all run in essentially the same way:
 
 	ansible-playbook -i ./hosts/digital_ocean.py create_canary.yml

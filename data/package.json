@@ -5,6 +5,7 @@
   "main": "server.js",
   "dependencies": {
     "docker-exec": "^0.3.0",
+    "net-ping": "^1.1.11",
     "node-ansible": "^0.3.0"
   },
   "devDependencies": {
