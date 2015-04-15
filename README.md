@@ -246,7 +246,7 @@ Going into thanatos, which will be described later, we have data on ping, latenc
 ![thanatosdetail](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosdetail.png)
 
 
-There is also a large amount of information on the actual service state of the machine over time for both ssh and ping.  The image below shows a histogram of the state on the ssh service.  Obviously alot of the time this box has been down as the team didn't want to pay for it to be up all of the time, also the actual nagios monitoring box has been up and down serveral times so it has not been monitoring for long enough for this infomration to be very valuable.
+There is also a large amount of information on the actual service state of the machine over time for both ssh and ping.  The image below shows a histogram of the state on the ssh service.  Obviously alot of the time this box has been down as the team didn't want to pay for it to be up all of the time, also the actual nagios monitoring box has been up and down several times so it has not been monitoring for long enough for this infomration to be very valuable.
 
 ![thanatosssh](https://github.com/Wildtrack/Server/blob/Deploy/img/thanatosssh.png)
 
@@ -304,9 +304,9 @@ Going to lodr.me after the change the canary is in effect.  50% of the time we s
 ##Problems with the system
 We have run into some issues with Digital Ocean for this project.  Occassionally we encounter errors where no matter how long we wait to connect to the new droplet via ssh the connection never goes through.  
 
-That could be dealt with by having Droplets that are up continuously and deleting their contents on each deploy, but that seems to run into territory where you are uncertain whether a box has been fully cleaned when a new deploy takes place, where our current system does not run into that issue.  This represents a trade off because the ssh issue is not easily reproducible and certainly does not happen on each deploy, and may well not happen on every 10 deploys, but it is possible for it to occur.
-
 There is a long community post about this sort of thing [here](https://www.digitalocean.com/community/questions/ssh-connect-to-host-port-22-operation-timed-out).
+
+To mitigate this issue, our build server tries to find 'fatal' in the output of ansible after a deployment attempt.  If this occurs then the build server relaunches the deploy procedure  until it succussfully deploys.  This occurs recursively in case mutiple deploys fail.    
 
 ##Notes
 
