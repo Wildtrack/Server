@@ -463,22 +463,24 @@ function sendToCanary(){
     console.log(result.output);
   });
 
-  canary = true;
-  var session = ping.createSession ();
+  if(canary === false){
+    canary = true;
+    var session = ping.createSession ();
 
-  var options = {
-    host: 'www.lodr.me',
-    port: 80,
-    path: '/canary'
-  };
+    var options = {
+      host: 'www.lodr.me',
+      port: 80,
+      path: '/canary'
+    };
 
-  http.get(options, function(res) {
-    if (res.statusCode == 200) {
-      console.log("Flipped canary switch to true.");
-    }
-  }).on('error', function(e) {
-    console.log("Got error: " + e.message);
-  });
+    http.get(options, function(res) {
+      if (res.statusCode == 200) {
+        console.log("Flipped canary switch to true.");
+      }
+    }).on('error', function(e) {
+      console.log("Got error: " + e.message);
+    });
+  }
 
   // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_canary.yml'), function (error, stdout, stderr){
   //   if(error) {

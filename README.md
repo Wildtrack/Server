@@ -32,7 +32,12 @@ The stock vagrant password is "vagrant".
 
 Unfortunately with our current setup you will need to have an account with Digital Ocean with a valid credit card number.  So given that we are not providing access credentials here in the README.md file.  Should the teaching staff care to see a demo we will certainly be happy to demo the software with live keys.  
 
-If you were going to run the software with the correct access and accounts you would do the following:  First go the Digital Ocean website click the API link and click Generate New Token.  Record the token information.  This is DO_API_TOKEN.  Near the top of the page is a link for view API v1, click that.  Generate a new key and save the information for ClientID and API Key.  These two correspond to DO_CLIENT_ID and DO_API_KEY.  Then on the vagrant box run the following commands placing in the key information from Digital Ocean:
+If you were going to run the software with the correct access and accounts you would do the following:  
+- First go the Digital Ocean website click the API link and click Generate New Token.  Record the token information.  This is DO_API_TOKEN.  
+
+- Near the top of the page is a link for view API v1, click that.  Generate a new key and save the information for ClientID and API Key.  
+
+These two correspond to DO_CLIENT_ID and DO_API_KEY.  Then on the vagrant box run the following commands placing in the key information from Digital Ocean:
 
 	export DO_API_TOKEN=xxxxxxxxxxxx
 	export DO_API_KEY=xxxxxxxxxxxxx
@@ -60,7 +65,7 @@ Back on the vagrant box run the following commands:
 	cp id_rsa ~/.ssh/id_rsa
 	chmod 600 ~/.ssh/id_rsa
 
-The vagrant up command provisions the vagrant box with a Digital Ocean specific tool called tugboat.  Information on the tool can be found [here](https://github.com/pearkes/tugboat).  You will run the following command which brings up the output shown below.  Answers to each prompt are typed in:
+The vagrant up command provisions the vagrant box with a Digital Ocean specific tool called tugboat.  Information on the tool can be found [here](https://github.com/pearkes/tugboat).  You will run the following command which brings up the output shown below.  Answers to each prompt are typed in, if there is no answer accept the default:
 
 	$ tugboat authorize
 	Enter your client key: <YOUR CLIENT ID> 
@@ -83,7 +88,8 @@ Note that we've left the ssh key ID blank.  The reason for this is that we need 
 
 	tugboat keys
 
-The output will list the keys associated with your account.  Pick the one the you added to Digital Ocean earlier in the tutorial.  Then change line 12 in these files: 
+The output will list the keys associated with your account.  Pick the one the you added to Digital Ocean earlier.  Then change line 12 in these files: 
+
 - <PATH TO THE DATA DIRECTORY>/data/scriptor/create_live.yml 
 - <PATH TO THE DATA DIRECTORY>/data/scriptor/create_canary.yml
 - <PATH TO THE DATA DIRECTORY>/data/scriptor/create_proxy.yml 
