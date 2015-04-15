@@ -169,7 +169,7 @@ These two scripts take a very long time to run.  They may take more than 15 mint
 
 Since everything is set now you will run:
 
-	sudo node server2.js
+	node server2.js
 
 This entire setup requires being logged in as root now because there is a conflict between [docker-exec](https://www.npmjs.com/package/docker-exec) and the dynamic inventory that we are using to provision with ansible.  Previously this command was run with sudo.
 	
