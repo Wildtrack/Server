@@ -55,7 +55,7 @@
         state=started
         search_regex=OpenSSH
     sudo: false
-  - pause: seconds=20
+  - pause: seconds=30
 - hosts: canary
   tasks:
   - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
