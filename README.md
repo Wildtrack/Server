@@ -301,6 +301,11 @@ Going to lodr.me after the change the canary is in effect.  50% of the time we s
 
 To turn off the canary feature simply push a new normal commit without the canary message.
 
+##Problems with the system
+We have run into some issues with Digital Ocean for this project.  Occassionally we encounter errors where no matter how long we wait to connect to the new droplet via ssh the connection never goes through.  
+
+That could be dealt with by having Droplets that are up continuously and deleting their contents on each deploy, but that seems to run into territory where you are uncertain whether a box has been fully cleaned when a new deploy takes place, where our current system does not run into that issue.  This represents a trade off because the ssh issue is not easily reproducible and certainly does not happen on each deploy, and may well not happen on every 10 deploys, but it is possible for it to occur.
+
 ##Notes
 
 Adding a URL to the repo will not be possible for teaching staff before they are added to the organization.  Just email one of us and we can add you to the organization.  For this specific usecase it is a bit problematic, but in most situations the only users of a buildbox would already be members of the github organization.  Anyway, sorry for the inconvienence.
