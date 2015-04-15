@@ -111,31 +111,31 @@ Additonally this software requires a domain name being routed with [Cloudflare](
 
 This generates an ugly block of json, so pipe it into a file and then copy and paste it [here](http://jsonviewer.stack.hu/).  You'll need to pull out the ids for each of the routes that are generated.  Each json block looks like this:
 
-  "rec_id": <THE VALUE WE WANT>,
-	  "rec_hash": "d0fcd89c404637ef8ff78da38751c1c1",
-	  "zone_name": "lodr.me",
-	  "name": "lodr.me",
-	  "display_name": "lodr.me",
-	  "type": "A",
-	  "prio": null,
-	  "content": "104.236.73.155",
-	  "display_content": "104.236.73.155",
-	  "ttl": "1",
-	  "ttl_ceil": 86400,
-	  "ssl_id": "1492605",
-	  "ssl_status": "V",
-	  "ssl_expires_on": null,
-	  "auto_ttl": 1,
-	  "service_mode": "0",
-	  "props": {
-	    "proxiable": 1,
-	    "cloud_on": 0,
-	    "cf_open": 1,
-	    "ssl": 1,
-	    "expired_ssl": 0,
-	    "expiring_ssl": 0,
-	    "pending_ssl": 0,
-	    "vanity_lock": 0
+          "rec_id": <THE VALUE WE WANT>,
+          "rec_hash": "d0fcd89c404637ef8ff78da38751c1c1",
+          "zone_name": "lodr.me",
+          "name": "lodr.me",
+          "display_name": "lodr.me",
+          "type": "A",
+          "prio": null,
+          "content": "104.236.73.155",
+          "display_content": "104.236.73.155",
+          "ttl": "1",
+          "ttl_ceil": 86400,
+          "ssl_id": "1492605",
+          "ssl_status": "V",
+          "ssl_expires_on": null,
+          "auto_ttl": 1,
+          "service_mode": "0",
+          "props": {
+            "proxiable": 1,
+            "cloud_on": 0,
+            "cf_open": 1,
+            "ssl": 1,
+            "expired_ssl": 0,
+            "expiring_ssl": 0,
+            "pending_ssl": 0,
+            "vanity_lock": 0
 
 "rec_id" is the value that we need for each of our four routes.  You will make a change in these four files:  
 
