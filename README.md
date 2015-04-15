@@ -219,7 +219,7 @@ The list of running droplets can be found by running:
 
 This section will describe exactly what our structure is with this project.  In the image below and as discussed above you will notice that we have 4 droplets in our system.  
 
-![sysdiag](https://github.com/Wildtrack/Server/blob/Deploy/img/sysdiag.png)
+![sysdiag](https://github.com/Wildtrack/Server/blob/Deploy/img/sysDiag.png)
 
 The droplets function as follows:
 
@@ -281,7 +281,19 @@ Canary operation is switched on by making a commit to the monitored github repo 
   - If there is an old canary build in kronos it is destroyed, but nothing happens to the live build in thanatos
   - After forever runs, the vagrant server issues a get to the following url:  http://lodr.me/canary
 
-Now the canary is deployed and the live build is deployed and traffic is routed between the two as described in the section on Cerberus.
+Now the canary is deployed and the live build is deployed and traffic is routed between the two as described in the section on Cerberus.  To attempt to show that the proxy is functioning we made a slight change to the normal deploy.  In the console each button in the maze game dash just prints out what the button does.  As shown below:
+
+![mazebuttons]()
+
+When the change is made and the push is made using the canary message as shown in this image:
+
+![canarycommit]()
+
+Going to lodr.me after the change the canary is in effect.  50% of the time we should get the canary, and visiting the site we do as shown in the image below:
+
+![canarybuttons]()
+
+To turn off the canary feature simply push a new normal commit without the canary message.
 
 ##Notes
 
