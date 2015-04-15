@@ -503,23 +503,23 @@ function sendToLive(){
     console.log(result.output);
   });
 
-  if(canary === true){
-    var session = ping.createSession ();
+  // if(canary === true){                         //I'm not sure you need this and would switch back to nocanary when not wanted
+  //   var session = ping.createSession ();         //Commiting a Live deploy doesn't necessarily mean you want to turn canary off
 
-    var options = {
-      host: 'www.lodr.me',
-      port: 80,
-      path: '/canary'
-    };
+  //   var options = {
+  //     host: 'www.lodr.me',
+  //     port: 80,
+  //     path: '/canary'
+  //   };
 
-    http.get(options, function(res) {
-      if (res.statusCode == 200) {
-        console.log("Flipped canary switch to false.");
-      }
-    }).on('error', function(e) {
-      console.log("Got error: " + e.message);
-    });
-  }
+  //   http.get(options, function(res) {
+  //     if (res.statusCode == 200) {
+  //       console.log("Flipped canary switch to false.");
+  //     }
+  //   }).on('error', function(e) {
+  //     console.log("Got error: " + e.message);
+  //   });
+  // }
 
   // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml -vvvv'), function (error, stdout, stderr){
   //   if(error) {

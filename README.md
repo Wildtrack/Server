@@ -169,7 +169,7 @@ These two scripts take a very long time to run.  They may take more than 15 mint
 
 Since everything is set now you will run:
 
-	node server2.js
+	sudo node server2.js
 
 This entire setup requires being logged in as root now because there is a conflict between [docker-exec](https://www.npmjs.com/package/docker-exec) and the dynamic inventory that we are using to provision with ansible.  Previously this command was run with sudo.
 	
@@ -187,13 +187,13 @@ A url will be displayed after vagrant share has run, a screenshot is below:
 
 ![VagrantShare](https://github.com/Wildtrack/Server/blob/Test/img/VagrantShare.png)	
 
-Once the server is up and vagrant share has been run the server state is visible at the vagrant share address.  This is our revamped UI.  The buttons at the top of the page are currently placeholders.  The bar on the left will populate with ISOstring dates matching the builds when they are triggered from a git webhook.  The fields will populate with the results of the build when the build selected on the left.
+Once the server is up and vagrant share has been run the server state is visible at the vagrant share address. The bar on the left will populate with ISOstring dates matching the builds when they are triggered from a git webhook.  The fields will populate with the results of the build when the build selected on the left.
 
 Screenshot of the initial state of the server:
 
 ![InitialState](https://github.com/Wildtrack/Server/blob/Test/img/InitialState.png)
 
-We are building a different project at this point.  The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
+The webhook should be added [here](https://github.com/Wildtrack/maze/settings/hooks/new).  There is an image of adding the webhook below: 
 
 ![Webhook](https://github.com/Wildtrack/Server/blob/master/img/Webhook.png)
 
@@ -318,13 +318,13 @@ Go here to create a Vagrant Cloud/Atlas account: [Vagrant Cloud](https://atlas.h
 
 ##Evaluation
 
-- The ability to configure a deployment environment automatically, using a configuration management tool, such as ansible, or configured using vagrant/docker.  Builds are provisioned using Ansible
+- The ability to configure a deployment environment automatically, using a configuration management tool, such as ansible, or configured using vagrant/docker.  Builds are provisioned on Digital Ocean using Ansible
 
 - The ability to deploy a self-contained/built application to the deployment environment. That is, this action should occur after a build step in your pipeline.  Build occurs on Vagrant server for testing purposes.  Npm install is run on the remote box after a git pull and the server is brought up.  This is never done unless the build actually passes on the vagrant server.
 
 - The deployment must occur on an actual remote machine/VM (e.g. AWS, droplet, VCL), and not a local VM.  Deployment is on Digital Ocean.
 
-- The ability to performa a canary release.  Done on the Kronos deploy box and described above.
+- The ability to perform a canary release.  Canary release triggered by adding "canary" to the commit message.  Canary is turned on/of by accessing lodr.me/canary.  Done on the Kronos deploy box.
 
 - The ability to monitor the deployed application for alerts/failures (using at least 2 metrics).  We are measuring latency, up time, and ssh being open or closed using Nagios.
 
