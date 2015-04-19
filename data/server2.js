@@ -21,13 +21,20 @@ var log = new PassThrough();
 log.pipe(process.stdout);
 
 var Docker = require("docker-exec");
+var Dockerode = require('dockerode');
+
+var docker = new Dockerode();
 var buildNode = [];
 
 var count = 0;
 
 function buildTracker(date) {        //object aggregates docker object, streams, and writable folder/files
 
-  this.dir = './history/' + date.toISOString();
+  this.name = date.toISOString();
+
+  this.dir = './history/' + this.name;
+
+
 
   fs.mkdirSync(this.dir);
 
@@ -40,6 +47,11 @@ function buildTracker(date) {        //object aggregates docker object, streams,
   this.firstTestStream = fs.createWriteStream("./" + this.dir + '/firstTest.txt');
   this.secondTestStream = fs.createWriteStream("./" + this.dir + '/secondTest.txt');
   this.commentCheckStream = fs.createWriteStream("./" + this.dir + '/commentCheck.txt');
+
+  this.imageId = '';
+  this.imageAlias = '';
+
+  this.accepted = false;
 
   this.canary = false;
 }
@@ -234,6 +246,20 @@ function dockerRun(b){                 //run docker commands
       }).then(function (stream) {
 
           stream.pipe(b.log);
+
+          docker.listContainers(function (err, containers) {                //get docker info
+            
+            b.imageId = containers[0].Id
+            b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
+
+            containers.forEach(function (containerInfo) {
+            //   //docker.getContainer(containerInfo.Id).stop(cb);
+
+              console.log(containerInfo)
+
+            //   b.imageId = containerInfo[0].Id                      //most recent container
+            });
+          });
       // }).then(function() {                   //mounting bugs
       //     console.log('---> run -v /home/vagrant/data:/vol meneal/buildbox');                 //docker exec doesnt handle the mounting
       //     exec(util.format('sudo docker run -v /home/vagrant/data:/vol meneal/buildbox'), function (error, stdout, stderr){
@@ -307,7 +333,14 @@ function dockerRun(b){                 //run docker commands
           rejectionCheck(b);
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
-          return b.ds.stop();
+          
+
+          if(b.accepted){
+             return dockerCommit(b);
+           }else{
+            return b.ds.stop();
+           }
+
       }).then(function () {
           console.log('---> Done without error\n');
           //done();
@@ -439,9 +472,13 @@ function rejectionCheck(b){     //checks rejection gate for build
     
     str = "Accepted"
 
-    if(b.canary){
-      sendToCanary();
-    }else {sendToLive();}
+    b.accepted = true;
+
+   
+
+    // if(b.canary){
+    //   sendToCanary();
+    // }else {sendToLive();}
 
   }
 
@@ -449,6 +486,34 @@ function rejectionCheck(b){     //checks rejection gate for build
 }
 
 createBuildList(undefined);
+
+function dockerCommit(b){
+
+  var executionString = 'sudo docker commit ' + b.imageAlias + ' aisobran/' + b.imageAlias;
+
+  exec(util.format(executionString),function (error, stdout, stderr){
+            
+    if(error) {
+      emitter.emit('error', error)
+    }
+
+    console.log(stdout)
+
+    var pushString = 'sudo docker push aisobran/' + b.imageAlias;
+
+    exec(util.format(pushString),function (error, stdout, stderr){
+
+      if(error){
+        emitter.emit('error', error);
+      }
+
+      console.log(stdout);
+
+      return b.ds.stop();
+    })
+
+  });
+}
 
 function sendToCanary(){
   console.log("Sending canary payload to digital ocean.  This will take awhile.");
