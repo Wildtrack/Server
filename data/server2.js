@@ -7,8 +7,6 @@ var exec = require('child_process').exec,
   fs = require('fs'),
   url = require('url');
 
-var Ansible = require('node-ansible');
-var ping = require('net-ping');
 var canary = false;
 
 var strem = require('stream');
@@ -598,97 +596,7 @@ function canaryDeploy(b){
   return b.ds.stop();
 }
 
-function sendToCanary(){
-  console.log("Sending canary payload to digital ocean.  This will take awhile.");
-  
-  var playbook = new Ansible.Playbook().playbook('./scriptor/create_canary');
-  //playbook.verbose('v');
-  playbook.inventory('./scriptor/hosts/digital_ocean.py')
 
-  // var promise = playbook.exec();
-
-  // promise.then(function(result) {
-  //   console.log(result.output);
-  // });
-
-  deployTillSucceed(playbook)
-  
-
-  if(canary === false){
-    canary = true;
-    var session = ping.createSession ();
-
-    var options = {
-      host: 'www.lodr.me',
-      port: 80,
-      path: '/canary'
-    };
-
-    http.get(options, function(res) {
-      if (res.statusCode == 200) {
-        console.log("Flipped canary switch to true.");
-      }
-    }).on('error', function(e) {
-      console.log("Got error: " + e.message);
-    });
-  }
-
-}
-
-function deployTillSucceed(playbook){
-
-  var promise = playbook.exec();
-
-  promise.then(function(result) {
-    console.log(result.output)
-
-    if(result.output.indexOf('fatal') != -1){
-      deployTillSucceed(playbook)
-    }
-  });
-
-}
-
-function sendToLive(){
-  console.log("Sending live payload to digital ocean.  This will take awhile.");
-  var playbook = new Ansible.Playbook().playbook('./scriptor/create_live');
-  //playbook.verbose('v');
-  playbook.inventory('./scriptor/hosts/digital_ocean.py')
-
-  // var promise = playbook.exec();
-
-  // promise.then(function(result) {
-  //   console.log(result.output);
-  // });
-
-  deployTillSucceed(playbook)
-
-  // if(canary === true){                         //I'm not sure you need this and would switch back to nocanary when not wanted
-  //   var session = ping.createSession ();         //Commiting a Live deploy doesn't necessarily mean you want to turn canary off
-
-  //   var options = {
-  //     host: 'www.lodr.me',
-  //     port: 80,
-  //     path: '/canary'
-  //   };
-
-  //   http.get(options, function(res) {
-  //     if (res.statusCode == 200) {
-  //       console.log("Flipped canary switch to false.");
-  //     }
-  //   }).on('error', function(e) {
-  //     console.log("Got error: " + e.message);
-  //   });
-  // }
-
-  // exec(util.format('ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_live.yml -vvvv'), function (error, stdout, stderr){
-  //   if(error) {
-  //       emitter.emit('error', error)   
-  //   }
-  //   process.stdout.write(stdout);
-  // });
-
-}
 
  
 // Used by exec to print the result of executing a subprocess.
