@@ -553,7 +553,7 @@ function liveDeploy(b){
 
   fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
 
-  exec(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/home/vagrant/data/liveDockerDeploy/'}, function (error, stdout, stderr){
+  exec(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/root/Server/data/liveDockerDeploy/'}, function (error, stdout, stderr){
 
       if(error){
         console.log('error', error);
@@ -583,7 +583,7 @@ function canaryDeploy(b){
 
   fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
 
-  exec(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/home/vagrant/data/canaryDockerDeploy/'}, function (error, stdout, stderr){
+  exec(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'}, function (error, stdout, stderr){
 
       if(error){
         console.log('error', error);
