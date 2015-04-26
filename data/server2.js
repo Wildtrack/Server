@@ -334,12 +334,26 @@ function dockerRun(b){                 //run docker commands
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
-
           if(b.accepted){
-             return dockerCommit(b);
+             console.log('node maze/server.js &')
+             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js &'), function(err, output){
+
+              if(err){
+                console.log(err)
+              }
+
+              console.log('dockercommit');
+              dockerCommit(b);
+             })
+
+             //return b.ds.run('node maze/server.js &');
            }else{
             return b.ds.stop();
            }
+
+      // }).then(function(){
+
+          
 
       }).then(function () {
           console.log('---> Done without error\n');
@@ -489,7 +503,9 @@ createBuildList(undefined);
 
 function dockerCommit(b){
 
-  var executionString = 'sudo docker commit ' + b.imageAlias + ' aisobran/' + b.imageAlias;
+  var executionString = 'sudo docker commit ' + b.imageAlias + ' wildtrack/' + b.imageAlias;
+
+  console.log(executionString);
 
   exec(util.format(executionString),function (error, stdout, stderr){
             
@@ -499,7 +515,9 @@ function dockerCommit(b){
 
     console.log(stdout)
 
-    var pushString = 'sudo docker push aisobran/' + b.imageAlias;
+    var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
+
+    console.log(pushString);
 
     exec(util.format(pushString),function (error, stdout, stderr){
 
@@ -509,10 +527,75 @@ function dockerCommit(b){
 
       console.log(stdout);
 
-      return b.ds.stop();
+      if(b.canary){
+        return liveDeploy(b);
+      }else{
+        return canaryDeploy(b);
+      }
+      
     })
 
   });
+}
+
+function liveDeploy(b){
+
+  tempJSON = {
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+      "Name": 'wildtrack/' + b.imageAlias
+    },
+    "Ports": [
+      {
+        "ContainerPort": "80"
+      }
+    ],
+    "Volumes": []
+  }
+
+  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
+
+  exec(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/home/vagrant/data/liveDockerDeploy/'}, function (error, stdout, stderr){
+
+      if(error){
+        console.log('error', error);
+      }
+
+      console.log(stdout);
+      
+  })
+
+  return b.ds.stop();
+}
+
+function canaryDeploy(b){
+
+  tempJSON = {
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+      "Name": 'wildtrack/' + b.imageAlias
+    },
+    "Ports": [
+      {
+        "ContainerPort": "80"
+      }
+    ],
+    "Volumes": []
+  }
+
+  fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
+
+  exec(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/home/vagrant/data/canaryDockerDeploy/'}, function (error, stdout, stderr){
+
+      if(error){
+        console.log('error', error);
+      }
+
+      console.log(stdout);
+      
+  })
+
+  return b.ds.stop();
 }
 
 function sendToCanary(){
@@ -619,9 +702,6 @@ function puts(error, stdout, stderr) {
     }
   }
 }
-
-
-
 //-----------------------
 
 function traverse(object, visitor)      //vistor pattern
