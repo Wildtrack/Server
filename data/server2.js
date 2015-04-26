@@ -225,7 +225,7 @@ server = http.createServer(function (req, res) {		//creates http server
 	}
 });
 
-server.listen(3000);				//listens to this port on guest VM
+server.listen(80);				//listens to this port on guest VM
 
 console.log("Server running on port 3000");
 
