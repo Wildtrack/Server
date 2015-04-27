@@ -331,9 +331,6 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
-      }).then(function(){
-          console.log("launching server");
-          return b.ds.run("-d node maze/server.js")
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
