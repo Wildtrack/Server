@@ -255,6 +255,8 @@ function dockerRun(b){                 //run docker commands
 
               console.log(containerInfo)
 
+
+
             //   b.imageId = containerInfo[0].Id                      //most recent container
             });
           });
@@ -333,16 +335,13 @@ function dockerRun(b){                 //run docker commands
           console.log('Run done with exit code: ' + code);
           
           if(b.accepted){
-             console.log('node maze/server.js &')
-             exec(util.format('sudo docker run ' + b.imageId + ' node maze/server.js'), function(err, output){
-
+             
               if(err){
                 console.log(err)
               }
 
               console.log('dockercommit');
               dockerCommit(b);
-             })
 
              //return b.ds.run('node maze/server.js &');
            }else{
@@ -513,25 +512,30 @@ function dockerCommit(b){
 
     console.log(stdout)
 
-    var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
+    console.log('node maze/server.js &');
 
-    console.log(pushString);
+    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' node maze/server.js'), function(err, output){
 
-    exec(util.format(pushString),function (error, stdout, stderr){
+      var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
 
-      if(error){
-        emitter.emit('error', error);
-      }
+      console.log(pushString);
 
-      console.log(stdout);
+      exec(util.format(pushString),function (error, stdout, stderr){
 
-      if(b.canary){
-        return liveDeploy(b);
-      }else{
-        return canaryDeploy(b);
-      }
-      
-    })
+        if(error){
+          emitter.emit('error', error);
+        }
+
+        console.log(stdout);
+
+        if(b.canary){
+          return liveDeploy(b);
+        }else{
+          return canaryDeploy(b);
+        }
+        
+      });
+    });
 
   });
 }
