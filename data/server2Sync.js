@@ -374,6 +374,13 @@ function dockerRun(b){                 //run docker commands
                   execSync(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'});
                 }
 
+                var executionString = 'sudo docker rm -f ' + b.imageAlias;
+                  console.log(executionString);
+                  execSync(util.format(executionString));
+                var executionString = 'sudo docker rmi -f' + ' wildtrack/' + b.imageAlias;
+                    console.log(executionString);
+                    execSync(util.format(executionString));
+
                 return b.ds.stop();
 
                 });
@@ -388,12 +395,7 @@ function dockerRun(b){                 //run docker commands
       }).then(function () {
           console.log('---> Done without error\n');
           console.log('clean up')
-          var executionString = 'sudo docker rm -f ' + b.imageAlias;
-              console.log(executionString);
-              execSync(util.format(executionString));
-          var executionString = 'sudo docker rmi -f' + ' wildtrack/' + b.imageAlias;
-              console.log(executionString);
-              execSync(util.format(executionString));
+          
 
 
       }).catch(function (err) {
