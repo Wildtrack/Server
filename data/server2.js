@@ -331,11 +331,6 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
-      }).then(function(){
-
-          console.log('run server')
-
-          return b.ds.run('node maze/server.js &')
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
@@ -515,7 +510,7 @@ function dockerCommit(b){
 
     console.log('node maze/server.js &');
 
-    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' node maze/server.js &'), function(err, output){
+    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' forever start maze/server.js'), function(err, output){
 
       if(err){console.log(err);}
 
