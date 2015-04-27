@@ -334,7 +334,7 @@ function dockerRun(b){                 //run docker commands
           
           if(b.accepted){
              console.log('node maze/server.js &')
-             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js'), function(err, output){
+             exec(util.format('sudo docker run ' + b.imageAlias + 'node maze/server.js'), function(err, output){
 
               if(err){
                 console.log(err)
