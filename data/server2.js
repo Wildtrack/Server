@@ -334,7 +334,7 @@ function dockerRun(b){                 //run docker commands
           
           if(b.accepted){
              console.log('node maze/server.js &')
-             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js &'), function(err, output){
+             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js'), function(err, output){
 
               if(err){
                 console.log(err)
@@ -551,7 +551,7 @@ function liveDeploy(b){
     "Volumes": []
   }
 
-  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
+  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON));
 
   exec(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/root/Server/data/liveDockerDeploy/'}, function (error, stdout, stderr){
 
@@ -560,10 +560,12 @@ function liveDeploy(b){
       }
 
       console.log(stdout);
+
+      return b.ds.stop();
       
   })
 
-  return b.ds.stop();
+  
 }
 
 function canaryDeploy(b){
@@ -590,10 +592,12 @@ function canaryDeploy(b){
       }
 
       console.log(stdout);
+
+      return b.ds.stop();
       
   })
 
-  return b.ds.stop();
+  
 }
 
 
