@@ -343,19 +343,14 @@ function dockerRun(b){                 //run docker commands
 
                 console.log(stdout);
 
-                
+                console.log('docker commit');
+
+                return dockerCommit(b);
+
               });
-             //return b.ds.run('node maze/server.js &');
            }else{
             return b.ds.stop();
            }
-
-      // }).then(function(){
-      }).then(function (){
-
-        console.log('docker commit')
-        return dockerCommit(b);
-          
 
       }).then(function () {
           console.log('---> Done without error\n');
