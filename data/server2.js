@@ -331,7 +331,7 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
-      }).then(function()){
+      }).then(function(){
           console.log("launching server");
           return b.ds.run("forever start maze/server.js")
       }).then(function (code) {
