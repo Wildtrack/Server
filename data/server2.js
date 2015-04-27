@@ -348,12 +348,12 @@ function dockerRun(b){                 //run docker commands
                   b.imageId = containers[0].Id
                   b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
 
-                  containers.forEach(function (containerInfo) { console.log(containerInfo)});
+                  containers.forEach(function (containerInfo) { console.log(containerInfo); });
 
                   console.log('docker commit');
 
                   return dockerCommit(b);
-                }
+                });
 
               });
            }else{
