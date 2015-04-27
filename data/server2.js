@@ -6,7 +6,7 @@ var exec = require('child_process').exec,
   emitter = new events.EventEmitter(),
   fs = require('fs'),
   url = require('url'),
-  spawn = requie('child_process').spawn;
+  spawn = require('child_process').spawn;
 
 var canary = false;
 
