@@ -240,7 +240,7 @@ emitter
 function dockerRun(b){                 //run docker commands 
   
   b.ds.start({
-          Image: 'meneal/buildbox'
+          Image: 'wildtrack/buildbox'
       }).then(function (stream) {
 
           stream.pipe(b.log);
@@ -331,6 +331,11 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
+      }).then(function(){
+
+          console.log('run server')
+
+          return b.ds.run('node maze/server.js &')
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
