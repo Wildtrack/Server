@@ -5,7 +5,8 @@ var exec = require('child_process').exec,
   events = require('events'),
   emitter = new events.EventEmitter(),
   fs = require('fs'),
-  url = require('url');
+  url = require('url'),
+  execSync = require('child_process').execSync;
 
 var canary = false;
 
