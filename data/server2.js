@@ -511,27 +511,36 @@ function dockerCommit(b){
     console.log('node maze/server.js &');
 
     exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' forever start maze/server.js'), function(err, output){
-
+            //try -d flag sudo docker run -d
       if(err){console.log(err);}
 
-      var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
 
-      console.log(pushString);
-
-      exec(util.format(pushString),function (error, stdout, stderr){
-
-        if(error){
-          emitter.emit('error', error);
+       exec(util.format(executionString),function (error, stdout, stderr){
+            
+        if(error) {
+          emitter.emit('error', error)
         }
 
-        console.log(stdout);
+        var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
 
-        if(b.canary){
-          return liveDeploy(b);
-        }else{
-          return canaryDeploy(b);
-        }
-        
+        console.log(pushString);
+
+        exec(util.format(pushString),function (error, stdout, stderr){
+
+          if(error){
+            emitter.emit('error', error);
+          }
+
+          console.log(stdout);
+
+          if(b.canary){
+            return liveDeploy(b);
+          }else{
+            return canaryDeploy(b);
+          }
+
+          
+        });
       });
     });
 
