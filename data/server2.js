@@ -333,7 +333,7 @@ function dockerRun(b){                 //run docker commands
           rejectionCheck(b);
       }).then(function(){
           console.log("launching server");
-          return b.ds.run("forever start maze/server.js")
+          return b.ds.run("-d node maze/server.js")
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
@@ -510,7 +510,6 @@ function dockerCommit(b){
     }
 
     console.log(stdout)
-
 
        exec(util.format(executionString),function (error, stdout, stderr){
             
