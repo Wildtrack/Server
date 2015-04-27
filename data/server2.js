@@ -335,10 +335,6 @@ function dockerRun(b){                 //run docker commands
           console.log('Run done with exit code: ' + code);
           
           if(b.accepted){
-             
-              if(err){
-                console.log(err)
-              }
 
               console.log('dockercommit');
               dockerCommit(b);
@@ -515,6 +511,8 @@ function dockerCommit(b){
     console.log('node maze/server.js &');
 
     exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' node maze/server.js'), function(err, output){
+
+      if(err){console.log(err);}
 
       var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
 
