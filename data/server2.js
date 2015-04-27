@@ -334,7 +334,6 @@ function dockerRun(b){                 //run docker commands
       }).then(function()){
           console.log("launching server");
           return b.ds.run("forever start maze/server.js")
-      }
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
