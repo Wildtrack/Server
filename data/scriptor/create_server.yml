@@ -1,0 +1,120 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+      # 512MB size
+    - droplet_size: 1gb
+      # Ubuntu 14.04 x64
+    - droplet_image: 11388420
+      # nyc2
+    - droplet_region: nyc3
+      # my ssh key
+    - droplet_ssh_keys: 763931
+  tasks:
+  # - name: Destroy old server
+  #   digital_ocean: >
+  #       state=absent
+  #       command=droplet
+  #       size_id={{ droplet_size }}
+  #       region_id={{ droplet_region }}
+  #       image_id={{ droplet_image }}
+  #       ssh_key_ids={{ droplet_ssh_keys }}
+  #       name=server
+  #       unique_name=yes
+  #   register: dold
+  # - name: Wait for server to die
+  #   local_action: 
+  #     module: wait_for 
+  #       delay=0
+  #       timeout=30
+  #   when: dold|changed
+  - name: Create server
+    digital_ocean: >
+        state=present
+        command=droplet
+        size_id={{ droplet_size }}
+        region_id={{ droplet_region }}
+        image_id={{ droplet_image }}
+        ssh_key_ids={{ droplet_ssh_keys }}
+        name=server
+        unique_name=yes
+        wait=yes
+    register: do
+  - name: Add new host to our inventory.
+    add_host:
+      name: "{{ do.droplet.ip_address }}"
+      groups: live
+    when: do.droplet is defined
+  # - name: Wait for SSH to come up
+  #   local_action: 
+  #     module: wait_for 
+  #       host={{ do.droplet.ip_address }}
+  #       port=22
+  #       delay=30
+  #       timeout=500
+  #       state=started
+  #       search_regex=OpenSSH
+  #   sudo: false
+  # - pause: seconds=30
+- hosts: live
+  tasks:
+  - lineinfile: "dest=/etc/environment line=CLOUD_FLARE='{{ lookup('env','CLOUD_FLARE') }}'"
+  - copy: src=/home/meneal/Documents/gits/Server/data/scriptor/serverdns.sh dest=~/serverdns.sh
+  - command: chmod +x serverdns.sh
+  - shell: . /etc/environment && ~/serverdns.sh
+    sudo: no
+  - name: install nrpe plugins
+    apt: pkg=nagios-plugins update_cache=true
+    register: plug
+  - name: retry nrpe plugin install
+    apt: pkg=nagios-plugins update_cache=true
+    when: plug|failed
+  - name: install nrpe server
+    apt: pkg=nagios-nrpe-server
+  - copy: src=/home/meneal/Documents/gits/Server/data/scriptor/nrpe.cfg dest=/etc/nagios/nrpe.cfg 
+  - name: restart nrpe
+    command: service nagios-nrpe-server restart
+  - name: Install git
+    apt: pkg=git state=installed update_cache=true
+  - name: install g++
+    apt: pkg=g++ state=installed
+  - name: run docker install script
+    script: docker.sh
+  - name: pull meneal/buildbox
+    command: docker pull meneal/buildbox
+  - name: install software properties common
+    apt: name=software-properties-common update_cache=yes
+  - name: add ansible repo
+    apt_repository: repo='ppa:ansible/ansible' 
+  - name: install ansible
+    apt: name=ansible 
+  - name: install pip
+    apt: name=python-pip
+  - name: install dopy
+    command: pip install dopy
+  - name: install ruby gems
+    apt: name=ruby-full
+  - name: install tugboat
+    command: gem install tugboat
+  - name: clone repo
+    command: git clone https://github.com/Wildtrack/Server.git
+    register: result
+    ignore_errors: True
+  - name: repo exists
+    command: git pull
+    args:
+      chdir: Server/
+    when: result|failed
+  - name: install node modules
+    command: npm install 
+    args:
+      chdir: Server/data/
+  # - name: Install Forever
+  #   npm: name=forever global=yes state=latest
+  # - name: Check list of running nodejs apps
+  #   command: forever list
+  #   register: forever_list
+  #   changed_when: false
+  # - name: Start server
+  #   command: forever start ./Server/server2.js
+  #   when: "forever_list.stdout.find('Server/server2.js') == -1"
