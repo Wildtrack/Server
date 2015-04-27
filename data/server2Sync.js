@@ -335,6 +335,7 @@ function dockerRun(b){                 //run docker commands
                 containers.forEach(function (containerInfo) {
 
                 console.log(containerInfo)
+                });
 
                 console.log('docker commit');
                 var executionString = 'sudo docker commit ' + b.imageAlias + ' wildtrack/' + b.imageAlias;
@@ -382,8 +383,6 @@ function dockerRun(b){                 //run docker commands
                     execSync(util.format(executionString));
 
                 return b.ds.stop();
-
-                });
             });
 
               
