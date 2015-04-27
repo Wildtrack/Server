@@ -331,13 +331,17 @@ function dockerRun(b){                 //run docker commands
       }).then(function (){
           console.log("---> checking rejection status");
           rejectionCheck(b);
+      }).then(function()){
+          console.log("launching server");
+          return b.ds.run("forever start maze/server.js")
+      }
       }).then(function (code) {
           console.log('Run done with exit code: ' + code);
           
           if(b.accepted){
 
               console.log('dockercommit');
-              dockerCommit(b);
+              return dockerCommit(b);
 
              //return b.ds.run('node maze/server.js &');
            }else{
@@ -508,12 +512,6 @@ function dockerCommit(b){
 
     console.log(stdout)
 
-    console.log('node maze/server.js &');
-
-    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' forever start maze/server.js'), function(err, output){
-            //try -d flag sudo docker run -d
-      if(err){console.log(err);}
-
 
        exec(util.format(executionString),function (error, stdout, stderr){
             
@@ -541,7 +539,6 @@ function dockerCommit(b){
 
           
         });
-      });
     });
 
   });
