@@ -517,30 +517,23 @@ function dockerCommit(b){
 
     console.log(stdout)
 
-       exec(util.format(executionString),function (error, stdout, stderr){
-            
-        if(error) {
-          emitter.emit('error', error)
-        }
+    var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
 
-        var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
+    console.log(pushString);
 
-        console.log(pushString);
+    exec(util.format(pushString),function (error, stdout, stderr){
 
-        exec(util.format(pushString),function (error, stdout, stderr){
+      if(error){
+        emitter.emit('error', error);
+      }
 
-          if(error){
-            emitter.emit('error', error);
-          }
+      console.log(stdout);
 
-          console.log(stdout);
-
-          if(b.canary){
-            return canaryDeploy(b);
-          }else{
-            return liveDeploy(b);
-          }
-        });
+      if(b.canary){
+        return canaryDeploy(b);
+      }else{
+        return liveDeploy(b);
+      }
     });
 
   });
@@ -575,7 +568,7 @@ function liveDeploy(b){
 
       return b.ds.stop();
       
-  })
+  });
 
   
 }
@@ -609,7 +602,7 @@ function canaryDeploy(b){
 
       return b.ds.stop();
       
-  })
+  });
 
   
 }
