@@ -109,6 +109,8 @@
     command: npm install 
     args:
       chdir: Server/data/
+  - name: install eb cli
+    command: pip install awsebcli
   # - name: Install Forever
   #   npm: name=forever global=yes state=latest
   # - name: Check list of running nodejs apps
