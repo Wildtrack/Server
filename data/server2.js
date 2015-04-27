@@ -337,26 +337,34 @@ function dockerRun(b){                 //run docker commands
           
           if(b.accepted){
 
-              console.log('launch server');
-              exec(util.format('sudo docker exec -d ' + b.imageAlias + ' node maze/server.js'), function(err, stdout){
+              var executionString = 'sudo docker commit ' + b.imageAlias + ' wildtrack/' + b.imageAlias;
 
-                if(err) {console.log(err)};
+              console.log(executionString);
 
-                console.log(stdout);
+              exec(util.format(executionString),function (error, stdout, stderr){
 
-                docker.listContainers(function (err, containers) {                //get docker info
-            
-                  b.imageId = containers[0].Id
-                  b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
+                  console.log('launch server');
+                  exec(util.format('sudo docker run -d wildtrack/' + b.imageAlias + ' node maze/server.js'), function(err, stdout){
 
-                  containers.forEach(function (containerInfo) { console.log(containerInfo); });
+                    if(err) {console.log(err)};
 
-                  console.log('docker commit');
+                    console.log(stdout);
 
-                  return dockerCommit(b);
-                });
+                    docker.listContainers(function (err, containers) {                //get docker info
+                
+                      b.imageId = containers[0].Id
+                      b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
 
+                      containers.forEach(function (containerInfo) { console.log(containerInfo); });
+
+                      console.log('docker commit');
+
+                      return dockerCommit(b);
+                    });
+
+                  });
               });
+
            }else{
             return b.ds.stop();
            }
