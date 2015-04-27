@@ -83,11 +83,27 @@ Then launch the server from data/
 	
 To use the build server we added [server.lodr.me](server.lodr.me) to a github webhook.  It also hosts the UI for our buildserver keeping a record of our build histories.
 
-Once a build is triggered by a commit it will be pushed either to the live server or canary server based on the commit message.  If canary is in the commit message than it's commited to canary otherwise it's commited to live.
+Once a build is triggered by a commit it will be pushed either to the live server or canary server based on the commit message.  If canary is in the commit message than it's commited to canary otherwise it's commited to live.  The apps are deployed to AWS EB.  The static address for the live build is here: [http://livedockerdeploy-dev.elasticbeanstalk.com/](http://livedockerdeploy-dev.elasticbeanstalk.com/). And for the canary build is here: [http://canarydockerdeploy-dev.elasticbeanstalk.com/](http://canarydockerdeploy-dev.elasticbeanstalk.com/)
 
-After the build and test like previous milestones, the build in the test environment is commited to a docker image.  The app server is then automatically launched in the docker image and that container is commited again.  This image is then pushed to [https://hub.docker.com/u/wildtrack/](https://hub.docker.com/u/wildtrack/).  
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/ebapps.png)
 
-A Dockerrun.aws.json is updated with the image name.  This is automatically deployed to AWS elatic beanstalk using the EB CLI.  Elastic beanstalk pulls the docker image and launches it with the app's server already running.  
+After the build and test like previous milestones, the build in the test environment is commited to a docker image if the tests are passed.  The app server is then automatically launched in the docker image and that container is commited again.  This image is then pushed to [https://hub.docker.com/u/wildtrack/](https://hub.docker.com/u/wildtrack/).  
+
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/server.png)
+
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/dockerhub.png)
+
+A Dockerrun.aws.json is updated with the image name.  
+
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/dockerrun.png)
+
+This is automatically deployed to AWS elatic beanstalk using the EB CLI. Elastic beanstalk pulls the docker image and launches it with the app's server already running.  
+
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/live.png)
+
+AWS EB also provides monitoring:
+
+![](https://raw.githubusercontent.com/Wildtrack/Server/dockerDeploy/img/monitor.png)
 	
 
 
