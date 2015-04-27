@@ -340,8 +340,14 @@ function dockerRun(b){                 //run docker commands
           if(b.accepted){
 
               console.log('dockercommit');
-              return dockerCommit(b);
+              exec(util.format('docker run -d ' + d.imageAlias + ' node maze/server.js'), function(err, stdout){
 
+                if(err) {console.log(err)};
+
+                console.log(stdout);
+
+                return dockerCommit(b);
+              })
              //return b.ds.run('node maze/server.js &');
            }else{
             return b.ds.stop();
