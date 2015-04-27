@@ -5,7 +5,8 @@ var exec = require('child_process').exec,
   events = require('events'),
   emitter = new events.EventEmitter(),
   fs = require('fs'),
-  url = require('url');
+  url = require('url'),
+  spawn = requie('child_process').spawn;
 
 var canary = false;
 
@@ -551,7 +552,7 @@ function liveDeploy(b){
     "Volumes": []
   }
 
-  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
+  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON));
 
   exec(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/root/Server/data/liveDockerDeploy/'}, function (error, stdout, stderr){
 
@@ -560,10 +561,12 @@ function liveDeploy(b){
       }
 
       console.log(stdout);
+
+      return b.ds.stop();
       
   })
 
-  return b.ds.stop();
+  
 }
 
 function canaryDeploy(b){
@@ -583,17 +586,23 @@ function canaryDeploy(b){
 
   fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
 
-  exec(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'}, function (error, stdout, stderr){
+  canaryExec = spawn(util.format('eb deploy canaryDockerDeploy-dev'),[], {cwd: '/root/Server/data/canaryDockerDeploy/'});
+
+  canaryExec.on('data', function(data){ console.log(data); });
+
+  canaryExec.on('close', function (error, stdout, stderr){
 
       if(error){
         console.log('error', error);
       }
 
       console.log(stdout);
+
+      return b.ds.stop();
       
   })
 
-  return b.ds.stop();
+  
 }
 
 
