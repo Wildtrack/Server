@@ -510,7 +510,7 @@ function dockerCommit(b){
 
     console.log('node maze/server.js &');
 
-    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' node maze/server.js'), function(err, output){
+    exec(util.format('sudo docker run wildtrack/' + b.imageAlias + ' node maze/server.js &'), function(err, output){
 
       if(err){console.log(err);}
 
