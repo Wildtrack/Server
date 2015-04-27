@@ -5,8 +5,7 @@ var exec = require('child_process').exec,
   events = require('events'),
   emitter = new events.EventEmitter(),
   fs = require('fs'),
-  url = require('url'),
-  spawn = require('child_process').spawn;
+  url = require('url');
 
 var canary = false;
 
@@ -335,7 +334,7 @@ function dockerRun(b){                 //run docker commands
           
           if(b.accepted){
              console.log('node maze/server.js &')
-             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js &'), function(err, output){
+             exec(util.format('docker run ' + b.imageAlias + 'node maze/server.js'), function(err, output){
 
               if(err){
                 console.log(err)
@@ -586,11 +585,7 @@ function canaryDeploy(b){
 
   fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
 
-  canaryExec = spawn(util.format('eb deploy canaryDockerDeploy-dev'),[], {cwd: '/root/Server/data/canaryDockerDeploy/'});
-
-  canaryExec.on('data', function(data){ console.log(data); });
-
-  canaryExec.on('close', function (error, stdout, stderr){
+  exec(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'}, function (error, stdout, stderr){
 
       if(error){
         console.log('error', error);
