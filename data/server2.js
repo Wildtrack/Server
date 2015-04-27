@@ -535,9 +535,9 @@ function dockerCommit(b){
           console.log(stdout);
 
           if(b.canary){
-            return liveDeploy(b);
-          }else{
             return canaryDeploy(b);
+          }else{
+            return liveDeploy(b);
           }
 
           
@@ -548,6 +548,8 @@ function dockerCommit(b){
 }
 
 function liveDeploy(b){
+
+  console.log("live deploy")
 
   tempJSON = {
     "AWSEBDockerrunVersion": "1",
@@ -580,6 +582,8 @@ function liveDeploy(b){
 }
 
 function canaryDeploy(b){
+
+  console.log("canary deploy")
 
   tempJSON = {
     "AWSEBDockerrunVersion": "1",
