@@ -343,9 +343,17 @@ function dockerRun(b){                 //run docker commands
 
                 console.log(stdout);
 
-                console.log('docker commit');
+                docker.listContainers(function (err, containers) {                //get docker info
+            
+                  b.imageId = containers[0].Id
+                  b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
 
-                return dockerCommit(b);
+                  containers.forEach(function (containerInfo) { console.log(containerInfo)});
+
+                  console.log('docker commit');
+
+                  return dockerCommit(b);
+                }
 
               });
            }else{
@@ -354,10 +362,18 @@ function dockerRun(b){                 //run docker commands
 
       }).then(function () {
           console.log('---> Done without error\n');
+
           //done();
       }).catch(function (err) {
           console.log('Done with error\n');
           console.log(err);
+          console.log('clean up');
+           var executionString = 'sudo docker rm -f ' + b.imageAlias;
+              console.log(executionString);
+              execSync(util.format(executionString));
+          var executionString = 'sudo docker rmi -f' + ' wildtrack/' + b.imageAlias;
+              console.log(executionString);
+              execSync(util.format(executionString));
       });
 
 }
@@ -521,6 +537,14 @@ function dockerCommit(b){
       if(error){
         emitter.emit('error', error);
       }
+
+      console.log('clean up');
+      var executionString = 'sudo docker rm -f ' + b.imageAlias;
+              console.log(executionString);
+              execSync(util.format(executionString));
+      var executionString = 'sudo docker rmi -f' + ' wildtrack/' + b.imageAlias;
+              console.log(executionString);
+              execSync(util.format(executionString));
 
       console.log(stdout);
 
