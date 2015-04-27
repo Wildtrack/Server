@@ -378,9 +378,6 @@ function dockerRun(b){                 //run docker commands
 
               return b.ds.stop();
 
-
-
-              });
            }else{
             return b.ds.stop();
            }
