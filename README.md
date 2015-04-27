@@ -1,16 +1,56 @@
 #Wildtrack Docker Deploy Server
 
-For this milestone we added an alternative deployment method.  This deployment strategy deploys Docker boxes to AWS Elastive Beanstalk.
+For this milestone we added an alternative deployment method.  This deployment strategy deploys Docker boxes to AWS Elastive Beanstalk.  Additionally we have removed the Vagrant setup that we used as our base server throughout the semester.  That has been replaced by a Digital Ocean droplet as will be described below.
 
 ##Setup
-After brining up the vagrant box
 
-	vagrant up
-	vagrant ssh
+###Prerequisites
 
-Install EB CLI
+- Ansible on your local machine, install information is [here](http://docs.ansible.com/intro_installation.html)
+
+###Build
+
+The benefit of changing to a cloud based server is that the server only needs to be built and provisioned occasionally, where the vagrant setup we had originally needed to be brought up and down each time we used it.  Furthermore, we needed to update our git hooks over and over again to reflect the changing urls that vagrant assigns.  
+
+Should whoever is doing this need help in getting keys or in setting up an ssh key that is described in depth in the readme on the Deploy branch.  
+
+In your local machine set the following exports:
+
+	export DO_API_TOKEN=xxxxxxxxxxxx
+	export DO_API_KEY=xxxxxxxxxxxxx
+	export DO_CLIENT_ID=xxxxxxxxxxxxxx
+	export CLOUD_FLARE=xxxxxxxxxxxxxxx
+
+Clone our repo:
+
+	git clone https://github.com/Wildtrack/Server.git
+
+Switch to the correct branch:
 	
-	sudo pip install awsebcli
+	cd Server
+	git checkout dockerDeploy
+
+Run the Ansible script to bring the server online:
+
+	cd data
+	ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_server.yml
+
+This could fail just because of an ssh time out, if it does simply rerun it.  
+
+Now if the monitoring box and proxy are not online bring them up with the following two commands: 
+
+	ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_monitor.yml
+	ansible-playbook -i ./scriptor/hosts/digital_ocean.py ./scriptor/create_proxy.yml
+
+These two scripts take a very long time to run.  They may take more than 15 mintues each.  These two boxes have been up for a long period of time and using this system for production would likely never be taken down unless in need of maintenence.  Tugboat is a very easy way to check which droplets are currently running.  All of its setup is described in depth in the deploy branch.  If Tugboat is installed simply run:
+
+	tugboat droplets
+
+This will give a list of all existing droplets.
+
+At this point the server is completely provisioned and the dns information is set to server.lodr.me.  To ssh run the following:
+
+	ssh root@server.lodr.me
 
 Login in to dockerhub
 
