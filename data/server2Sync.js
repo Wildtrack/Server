@@ -250,22 +250,11 @@ function dockerRun(b){                 //run docker commands
             b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
 
             containers.forEach(function (containerInfo) {
-            //   //docker.getContainer(containerInfo.Id).stop(cb);
 
             console.log(containerInfo)
 
-
-
-            //   b.imageId = containerInfo[0].Id                      //most recent container
             });
           });
-      // }).then(function() {                   //mounting bugs
-      //     console.log('---> run -v /home/vagrant/data:/vol meneal/buildbox');                 //docker exec doesnt handle the mounting
-      //     exec(util.format('sudo docker run -v /home/vagrant/data:/vol meneal/buildbox'), function (error, stdout, stderr){
-      //       if(error) {
-      //         emitter.emit('error', error)
-      //       }
-      //     });
       }).then(function () {
           console.log('---> apt-get install wget\n');
           return b.ds.run('apt-get install wget');
@@ -335,48 +324,62 @@ function dockerRun(b){                 //run docker commands
           
           if(b.accepted){
 
-              tempJSON = {
-                "AWSEBDockerrunVersion": "1",
-                "Image": {
-                  "Name": 'wildtrack/' + b.imageAlias
-                  },
-                "Ports": [
-                  {
-                    "ContainerPort": "80"
-                  }
-                ],
-                "Volumes": []
-              }
+            console.log('launch server');
+            execSync(util.format('sudo docker exec -d ' + b.imageAlias + ' node maze/server.js'))
 
-              console.log(tempJSON);
-
-              if(b.canary){
-                fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON));
-              }else{
-                fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
-              }
-
-              console.log('launch server');
-              execSync(util.format('sudo docker exec -d ' + b.imageAlias + ' node maze/server.js'))
+            docker.listContainers(function (err, containers) {                //get docker info
             
-              console.log('docker commit');
-              var executionString = 'sudo docker commit ' + b.imageAlias + ' wildtrack/' + b.imageAlias;
-              console.log(executionString);
-              execSync(util.format(executionString));
-            
-              var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
-              console.log(pushString);
-              execSync(util.format(pushString));
+                b.imageId = containers[0].Id
+                b.imageAlias = containers[0].Names[0].substring(1, containers[0].Names[0].length)
 
-              if(b.canary){
-                console.log('live deploy');
-                execSync(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/root/Server/data/liveDockerDeploy/'});
-              }else{
-                console.log('canary deploy');
-                execSync(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'});
-              }
+                containers.forEach(function (containerInfo) {
 
-              return b.ds.stop();
+                console.log(containerInfo)
+
+                console.log('docker commit');
+                var executionString = 'sudo docker commit ' + b.imageAlias + ' wildtrack/' + b.imageAlias;
+                console.log(executionString);
+                execSync(util.format(executionString));
+              
+                var pushString = 'sudo docker push wildtrack/' + b.imageAlias;
+                console.log(pushString);
+                execSync(util.format(pushString));
+
+                tempJSON = {
+                  "AWSEBDockerrunVersion": "1",
+                  "Image": {
+                    "Name": 'wildtrack/' + b.imageAlias
+                    },
+                  "Ports": [
+                    {
+                      "ContainerPort": "80"
+                    }
+                  ],
+                  "Volumes": []
+                }
+
+                console.log(tempJSON);
+
+                if(b.canary){
+                  fs.writeFileSync('./liveDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON));
+                }else{
+                  fs.writeFileSync('./canaryDockerDeploy/Dockerrun.aws.json', JSON.stringify(tempJSON))
+                }
+
+                if(b.canary){
+                  console.log('live deploy');
+                  execSync(util.format('eb deploy liveDockerDeploy-dev'),{cwd: '/root/Server/data/liveDockerDeploy/'});
+                }else{
+                  console.log('canary deploy');
+                  execSync(util.format('eb deploy canaryDockerDeploy-dev'),{cwd: '/root/Server/data/canaryDockerDeploy/'});
+                }
+
+                return b.ds.stop();
+
+                });
+            });
+
+              
 
            }else{
             return b.ds.stop();
