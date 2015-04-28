@@ -1,5 +1,7 @@
 #Wildtrack Docker Deploy Server
 
+[Here](https://vid.me/JedC) is a link to our screencast.
+
 For this milestone we added an alternative deployment method.  This deployment strategy deploys Docker boxes to AWS Elastive Beanstalk.  Additionally we have removed the Vagrant setup that we used as our base server throughout the semester.  That has been replaced by a Digital Ocean droplet as will be described below.
 
 ##Setup
